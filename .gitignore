@@ -1,1 +1,4 @@
 .vs
+ConcurrenceAPI/bin
+ConcurrenceAPI/obj
+ConcurrenceClient/node_modules
