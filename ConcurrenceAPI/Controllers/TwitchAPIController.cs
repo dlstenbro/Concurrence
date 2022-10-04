@@ -1,10 +1,8 @@
-﻿using ConcurrenceAPI.Models;
+﻿using ConcurrenceAPI.Common;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ConcurrenceAPI.Common;
+using RestSharp;
+using Microsoft.Extensions.Configuration;
 
 namespace ConcurrenceAPI.Controllers
 {
@@ -12,48 +10,62 @@ namespace ConcurrenceAPI.Controllers
     [Route("[controller]")]
     public class TwitchAPIController : ControllerBase
     {
-        #region Enviroment Variables
-
-        private string api_client_id = Environment.GetEnvironmentVariable("TWITCH_CLIENT_ID");
-        private string api_access_token = Environment.GetEnvironmentVariable("TWITCH_CLIENT_SECRET");
-
-        #endregion Enviroment Variables
+        private readonly IConfiguration _config;
 
         #region API Endpoints
 
-        private string api_streams_url = @"https://api.twitch.tv/helix/streams";
+        private string _APIStreamsURL = @"https://api.twitch.tv/helix/streams";
+        private string _APIAuthURL = @"https://id.twitch.tv/oauth2/token";
 
         #endregion API Endpoints
 
-        private OAuthConnector connector;
-        private TwitchAPIModel model;
-
-        public TwitchAPIController(TwitchAPIModel model)
+        #region Constructor
+        public TwitchAPIController(IConfiguration configuration)
         {
-            this.model = model;
-
-            connector = new OAuthConnector(api_streams_url);
-            connector.GetAuthToken("client_credientials", api_client_id, api_access_token);
+            _config = configuration;
         }
+        #endregion Constructor
 
-        private readonly ILogger<TwitchAPIController> _logger;
-
-        public TwitchAPIController(ILogger<TwitchAPIController> logger)
+        #region Routes
+        [HttpGet]
+        [Route("/GetAuthToken")]
+        public AuthToken GetAuthToken()
         {
-            _logger = logger;
+            return new OAuthConnector(_APIAuthURL)
+                .GetAuthToken("client_credentials",
+                    _config["TwitchAPI:ClientId"], 
+                    _config["TwitchAPI:ClientSecret"]
+                    );
         }
 
         [HttpGet]
-        public IEnumerable<TwitchAPIModel> Get()
+        [Route("/")]
+        public object GetStreams()
         {
-            // request all streams and update the model with the new list
-            return Enumerable.Range(1, 5).Select(index => new TwitchAPIModel
+            if(AuthDetails == null)
             {
-                //Date = DateTime.Now.AddDays(index),
-                //TemperatureC = rng.Next(-20, 55),
-                //Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                //Redirect("/GetAuthToken");
+                AuthDetails = GetAuthToken();
+            }
+
+            RestRequest request = new RestRequest();
+            RestClient client = new RestClient(_APIStreamsURL);
+
+            request.Method = Method.Get;
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddHeader("Authorization", (AuthDetails.token_type == "bearer" ? "Bearer " : "Basic ") + AuthDetails.access_token);
+            request.AddHeader("Client-Id", _config["TwitchAPI:ClientId"]);
+
+            RestResponse res = client.Execute(request);
+
+            return res.Content;
+
         }
+        #endregion Routes
+
+        #region Properties
+        private AuthToken AuthDetails { get; set; }
+        #endregion
     }
 }

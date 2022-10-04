@@ -9,5 +9,10 @@ namespace ConcurrenceAPI.Common
         public string token_type { get; set; }
 
     }
+    public class TwitchAPISecret
+    {
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+    }
 }
 

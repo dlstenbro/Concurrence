@@ -7,23 +7,13 @@ namespace ConcurrenceAPI.Models
 {
     public class TwitchAPIModel
     {
-        public List<TwitchStreamMeta> streams;
-
-        #region Methods
-
-        #endregion Methods
-
+        #region Properties
+        public List<TwitchStreamMeta> streams { get; set; }
+        #endregion Properties
     }
 
     public class TwitchStreamMeta
     {
-        #region Constructor
-        public TwitchStreamMeta()
-        {
-
-        }
-        #endregion Constructor
-
         #region Properties
         public string id { get; set; }
         public int user_id { get; set; }
