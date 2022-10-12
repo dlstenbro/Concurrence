@@ -54,7 +54,7 @@ namespace ConcurrenceAPI.Controllers
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddHeader("Authorization", (AuthDetails.token_type == "bearer" ? "Bearer " : "Basic ") + AuthDetails.access_token);
-            request.AddHeader("Client-Id", _config["TwitchAPI:ClientId"]);
+            request.AddHeader("Client-Id", _config["ClientId"]);
 
             RestResponse res = client.Execute(request);
 
