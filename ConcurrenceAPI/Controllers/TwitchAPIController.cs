@@ -33,8 +33,8 @@ namespace ConcurrenceAPI.Controllers
         {
             return new OAuthConnector(_APIAuthURL)
                 .GetAuthToken("client_credentials",
-                    _config["TwitchAPI:ClientId"], 
-                    _config["TwitchAPI:ClientSecret"]
+                    _config["ClientId"], 
+                    _config["ClientSecret"]
                     );
         }
 
@@ -44,7 +44,6 @@ namespace ConcurrenceAPI.Controllers
         {
             if(AuthDetails == null)
             {
-                //Redirect("/GetAuthToken");
                 AuthDetails = GetAuthToken();
             }
 
