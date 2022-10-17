@@ -9,7 +9,8 @@ Concurrence is a Angular-powered web client that allows users to connect to diff
 - Allows account connectivity to different streaming services
 
 ## How it works
-![diagram](https://github.com/dlstenbro/Concurrence/blob/add-readme/images/concurrence.png)
+![image](https://user-images.githubusercontent.com/7519739/196289019-0f144f83-a86a-468d-97bf-628040923743.png)
+
 
 ## Stack
 Concurrence utilizes the following stack:
