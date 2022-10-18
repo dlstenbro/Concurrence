@@ -25,3 +25,6 @@ jobs:
     - name: Test
       working-directory: ./ConcurrenceAPI
       run: dotnet test --no-build --verbosity normal
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v3.2.0
+    
