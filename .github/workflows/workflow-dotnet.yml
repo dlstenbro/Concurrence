@@ -33,5 +33,4 @@ jobs:
       uses: docker/build-push-action@v3.2.0
       with:
         context: ./ConcurrenceAPI
-        push: true
         tags: conucrrence-api:latest
