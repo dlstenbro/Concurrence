@@ -34,4 +34,4 @@ jobs:
       with:
         context: ./ConcurrenceAPI
         push: true
-        tags: ConcurrenceAPI:latest
+        tags: conucrrence-api:latest
