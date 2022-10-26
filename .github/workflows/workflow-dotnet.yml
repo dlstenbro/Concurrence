@@ -16,18 +16,22 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+        
     - name: Restore dependencies
       working-directory: ./ConcurrenceAPI
       run: dotnet restore
+      
     - name: Build
       working-directory: ./ConcurrenceAPI
       run: dotnet build --no-restore
+      
     - name: Test
       working-directory: ./ConcurrenceAPI
       run: dotnet test --no-build --verbosity normal
+      
     - name: Build and push Docker images
       uses: docker/build-push-action@v3.2.0
       with:
         context: ./ConcurrenceAPI
         push: true
-        tags: app:latest
+        tags: ConcurrenceAPI:latest
