@@ -6,9 +6,16 @@ on:
   pull_request:
     branches: [ "main", "develop" ]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: concurrence-api
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - uses: actions/checkout@v3
@@ -16,7 +23,7 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-        
+
     - name: Restore dependencies
       working-directory: ./ConcurrenceAPI
       run: dotnet restore
@@ -28,9 +35,27 @@ jobs:
     - name: Test
       working-directory: ./ConcurrenceAPI
       run: dotnet test --no-build --verbosity normal
-      
+
+
+    - name: Log into registry ${{ env.REGISTRY }}
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
     - name: Build and push Docker images
-      uses: docker/build-push-action@v3.2.0
+      uses: docker/build-push-action@v3
       with:
         context: ./ConcurrenceAPI
-        tags: conucrrence-api:latest
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
