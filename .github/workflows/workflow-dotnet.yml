@@ -8,7 +8,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: concurrence-api:latest
+  IMAGE_NAME: concurrence-api
+  TAG: latest
 
 jobs:
   build:
@@ -50,7 +51,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{env.TAG}}
 
     - name: Build and push Docker images
       uses: docker/build-push-action@v3
