@@ -29,7 +29,6 @@ namespace ConcurrenceAPI.Common
 
             RestResponse response = _client.Execute(_request);
 
-            // TODO: Might be used later
             AuthToken? tknData = JsonSerializer.Deserialize<AuthToken>(response.Content);
 
             return tknData;
