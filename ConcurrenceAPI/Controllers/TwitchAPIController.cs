@@ -1,8 +1,10 @@
 ﻿using ConcurrenceAPI.Common;
+using ConcurrenceAPI.Models.Twitch;
 
-using Microsoft.AspNetCore.Mvc;
 using RestSharp;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace ConcurrenceAPI.Controllers
 {
@@ -58,7 +60,16 @@ namespace ConcurrenceAPI.Controllers
 
             RestResponse res = client.Execute(request);
 
-            return res.Content;
+            TwitchAPIModel model = new TwitchAPIModel();
+            JToken json = JObject.Parse(res.Content == null ? "" : res.Content)["data"];
+
+            foreach(JToken record in json)
+            {
+                TwitchStreamMeta? meta = record.ToObject<TwitchStreamMeta>();
+                model.TwitchStreams.Add(meta);
+            }
+
+            return model;
 
         }
         #endregion Routes
