@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: concurrence-api
+  IMAGE_NAME: concurrence-api:latest
 
 jobs:
   build:
