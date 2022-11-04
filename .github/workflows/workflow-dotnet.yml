@@ -53,10 +53,9 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
         tags: |
-          type=raw,value=0.1.${{ github.run_number }},priority=1000
-          type=ref,event=branch
-          type=sha
-          type=raw,value=latest
+          # set latest tag for master branch
+          type=raw,value={{tag}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+          type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
 
     - name: Build and push Docker images
       uses: docker/build-push-action@v3
