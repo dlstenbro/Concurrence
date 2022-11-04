@@ -53,7 +53,7 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
         tags: |
-          type=raw,value=0.1.${{ github.run_number }},priority=1000
+          type=raw,value={{tag}},priority=1000
           type=ref,event=branch
           type=sha
           type=raw,value=latest
