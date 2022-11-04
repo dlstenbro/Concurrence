@@ -1,5 +1,5 @@
 {
-  "name": "concurrence-front-end",
+  "name": "concurrence-client",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
