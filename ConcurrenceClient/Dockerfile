@@ -8,3 +8,4 @@ RUN npm run build --prod
 #stage 2
 FROM nginx:alpine
 COPY --from=node /app/dist/concurrence-client /usr/share/nginx/html
+EXPOSE 80/TCP
