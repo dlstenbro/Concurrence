@@ -59,16 +59,19 @@ namespace ConcurrenceAPI.Controllers
             request.AddHeader("Client-Id", _config["ClientId"]);
 
             RestResponse res = client.Execute(request);
-
             TwitchAPIModel model = new TwitchAPIModel();
-            JToken json = JObject.Parse(res.Content == null ? "" : res.Content)["data"];
 
-            if(json != null && json.HasValues)
+            if(res.IsSuccessful)
             {
-                foreach (JToken record in json)
+                JToken json = JObject.Parse(res.Content == null ? "" : res.Content)["data"];
+
+                if (json != null && json.HasValues)
                 {
-                    TwitchStreamMeta? meta = record.ToObject<TwitchStreamMeta>();
-                    model.TwitchStreams.Add(meta);
+                    foreach (JToken record in json)
+                    {
+                        TwitchStreamMeta? meta = record.ToObject<TwitchStreamMeta>();
+                        model.TwitchStreams.Add(meta);
+                    }
                 }
             }
 
