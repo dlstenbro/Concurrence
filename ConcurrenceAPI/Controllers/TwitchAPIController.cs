@@ -5,6 +5,7 @@ using RestSharp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace ConcurrenceAPI.Controllers
 {
@@ -33,11 +34,15 @@ namespace ConcurrenceAPI.Controllers
         [Route("/GetAuthToken")]
         public AuthToken GetAuthToken()
         {
+            if (string.IsNullOrEmpty(_config["ClientId"]) ||
+                string.IsNullOrEmpty(_config["ClientSecret"]))
+                throw new Exception("Secrets are not properly configured!");
+
             return new OAuthConnector(_APIAuthURL)
                 .GetAuthToken("client_credentials",
                     _config["ClientId"], 
                     _config["ClientSecret"]
-                    );
+                );
         }
 
         [HttpGet]
