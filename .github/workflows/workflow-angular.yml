@@ -50,12 +50,12 @@ jobs:
         run: |
           npm run build --prod
           
-      - name: Lint
-        working-directory: ./ConcurrenceClient
-        run: |
-          npm run lint
+      #- name: Lint
+      #  working-directory: ./ConcurrenceClient
+      #  run: |
+      #    npm run lint
           
-      - name: Test
-        working-directory: ./ConcurrenceClient
-        run: |
-          npm run test --prod
+      #- name: Test
+      #  working-directory: ./ConcurrenceClient
+      #  run: |
+      #    npm run test --prod
