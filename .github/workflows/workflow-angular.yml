@@ -48,7 +48,7 @@ jobs:
       - name: Build
         working-directory: ./ConcurrenceClient
         run: |
-          npm run build -- --prod
+          npm run build --prod
           
       - name: Lint
         working-directory: ./ConcurrenceClient
@@ -58,4 +58,4 @@ jobs:
       - name: Test
         working-directory: ./ConcurrenceClient
         run: |
-          npm run test -- --prod
+          npm run test --prod
