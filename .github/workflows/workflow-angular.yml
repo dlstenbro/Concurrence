@@ -8,7 +8,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: concurrence-client
   TAG: latest
-  NODE_VERSION: 12.11.1
+  NODE_VERSION: v16.10
 
 jobs:
   build:
