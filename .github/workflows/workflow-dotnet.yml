@@ -1,15 +1,8 @@
-name: .NET
+name: .NET Build && Test
 
 on:
-  push:
-    branches: [ "feature/*" ]
   pull_request:
-    branches: [ "main", "develop" ]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: concurrence-api
-  TAG: latest
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -20,34 +13,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .Net source
+
+    - name: Setup .NET source
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x    
-    
-    - name: Log into registry ${{ env.REGISTRY }}
-      if: github.event_name != 'pull_request'
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        dotnet-version: 6.0.x
 
-
-    - name: Extract Docker metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
-        tags: |
-          # set latest tag for master branch
-          type=raw,value={{tag}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-          type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
-
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v3
-      with:
-        context: ./ConcurrenceAPI
-        push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+    - name: Restore dependencies
+      working-directory: ./ConcurrenceAPI
+      run: dotnet restore
+      
+    - name: Build Source
+      working-directory: ./ConcurrenceAPI
+      run: dotnet build --no-restore
+      
+    - name: Run tests
+      working-directory: ./ConcurrenceAPI
+      run: dotnet test --no-build --verbosity normal
