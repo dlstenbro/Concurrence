@@ -11,7 +11,7 @@ env:
   IMAGE_NAME_API: concurrence-api
   IMAGE_NAME_CLIENT: concurrence-client
   DEV_TAG: dev-latest
-  RELEASE_TAG: ${{tag}}
+  RELEASE_TAG: latest
 
 jobs:
   build:
