@@ -22,12 +22,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set Tag
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-    - name: Test
+    - name: Set environment variables
+      run: |
+        RELEASE_VERSION=${GITHUB_REF#refs/*/}
+        GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
+      
+    - name: Show Env
       run: |
         echo $RELEASE_VERSION
         echo ${{ env.RELEASE_VERSION }}
+        echo $GIT_HASH
     
     - name: Log into registry ${{ env.REGISTRY }}
       if: github.event_name != 'pull_request'
