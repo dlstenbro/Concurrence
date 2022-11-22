@@ -20,9 +20,8 @@ jobs:
       packages: write
 
     steps:
+    - name: Checking out with tag ${{ github.ref_name }}
     - uses: actions/checkout@v3
-      
-    - name: Using Tag ${{ github.ref_name }}
     
     - name: Log into registry ${{ env.REGISTRY }}
       if: github.event_name != 'pull_request'
