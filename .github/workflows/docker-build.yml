@@ -61,7 +61,7 @@ jobs:
           # set latest tag for master branch
           type=raw,value=${{env.RELEASE_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
-          type=raw,value=${{env.SHORT_SHA}},enable=${{ github.ref != format('refs/heads/{0}', 'develop') || github.ref != format('refs/heads/{0}', 'main') }}
+          type=raw,value=${{env.SHORT_SHA}},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
         
     - name: Build and push Docker Client Container
       uses: docker/build-push-action@v3
