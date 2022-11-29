@@ -49,8 +49,8 @@ jobs:
       with:
         context: ./ConcurrenceAPI
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: ${{ steps.api-meta.outputs.tags }}
+        labels: ${{ steps.api-meta.outputs.labels }}
 
     - name: Extract Docker Metadata
       id: client-meta
@@ -68,5 +68,5 @@ jobs:
       with:
         context: ./ConcurrenceClient
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}        
+        tags: ${{ steps.client-meta.outputs.tags }}
+        labels: ${{ steps.client-meta.outputs.labels }}        
