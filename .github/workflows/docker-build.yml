@@ -12,7 +12,6 @@ env:
   IMAGE_NAME_CLIENT: concurrence-client
   DEV_TAG: dev-latest
   RELEASE_TAG: latest
-  SHORT_SHA: None
 
 jobs:
   build:
@@ -24,11 +23,8 @@ jobs:
     steps:
     - name: Add SHORT_SHA env property with commit short sha
       run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-      
-    - name: SHORT SHA
-      run: echo ${SHORT_SHA} ${{env.SHORT_SHA}}
 
-    - name: Checking out with tag ${{env.SHORT_SHA}}
+    - name: Checking out with tag ${SHORT_SHA}
       uses: actions/checkout@v3
     
     - name: Log into registry ${{ env.REGISTRY }}
