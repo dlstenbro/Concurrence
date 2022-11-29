@@ -12,7 +12,7 @@ env:
   IMAGE_NAME_CLIENT: concurrence-client
   DEV_TAG: dev-latest
   RELEASE_TAG: latest
-  SHA_TAG: FFFF
+  SHORT_SHA: None
 
 jobs:
   build:
@@ -24,8 +24,10 @@ jobs:
     steps:
     - name: Add SHORT_SHA env property with commit short sha
       run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-      
-    - name: Checking out with tag ${ SHORT_SHA }
+    - name: SHORT SHA
+      run: ECHO ${SHORT_SHA}
+
+    - name: Checking out with tag ${{env.SHORT_SHA}}
       uses: actions/checkout@v3
     
     - name: Log into registry ${{ env.REGISTRY }}
@@ -45,8 +47,8 @@ jobs:
           # set latest tag for master branch
           type=raw,value=${{env.RELEASE_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
-          type=raw,value=${ SHORT_SHA },enable=${{ github.ref != format('refs/heads/{0}', 'develop') || github.ref != format('refs/heads/{0}', 'main') }}
-
+          type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') || github.ref != format('refs/heads/{0}', 'main') }}
+          
     - name: Build and push Docker API Container
       uses: docker/build-push-action@v3
       with:
@@ -64,6 +66,7 @@ jobs:
           # set latest tag for master branch
           type=raw,value=${{env.RELEASE_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
+          type=raw,value=${{env.SHORT_SHA}},enable=${{ github.ref != format('refs/heads/{0}', 'develop') || github.ref != format('refs/heads/{0}', 'main') }}
         
     - name: Build and push Docker Client Container
       uses: docker/build-push-action@v3
