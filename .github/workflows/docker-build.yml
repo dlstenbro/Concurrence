@@ -26,7 +26,7 @@ jobs:
       run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
       
     - name: SHORT SHA
-      run: echo ${SHORT_SHA} ${{SHORT_SHA}}
+      run: echo ${SHORT_SHA} ${{env.SHORT_SHA}}
 
     - name: Checking out with tag ${{env.SHORT_SHA}}
       uses: actions/checkout@v3
