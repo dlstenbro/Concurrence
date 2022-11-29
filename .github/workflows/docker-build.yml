@@ -24,8 +24,9 @@ jobs:
     steps:
     - name: Add SHORT_SHA env property with commit short sha
       run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+      
     - name: SHORT SHA
-      run: ECHO ${SHORT_SHA}
+      run: echo ${SHORT_SHA} ${{SHORT_SHA}}
 
     - name: Checking out with tag ${{env.SHORT_SHA}}
       uses: actions/checkout@v3
