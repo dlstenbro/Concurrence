@@ -44,15 +44,15 @@ jobs:
           # set latest tag for master branch
           type=raw,value=${{env.RELEASE_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
-          type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') || github.ref != format('refs/heads/{0}', 'main') }}
+          type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
           
     - name: Build and push Docker API Container
       uses: docker/build-push-action@v3
       with:
         context: ./ConcurrenceAPI
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: ${{ steps.api-meta.outputs.tags }}
+        labels: ${{ steps.api-meta.outputs.labels }}
 
     - name: Extract Docker Metadata
       id: client-meta
@@ -63,12 +63,12 @@ jobs:
           # set latest tag for master branch
           type=raw,value=${{env.RELEASE_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
-          type=raw,value=${{env.SHORT_SHA}},enable=${{ github.ref != format('refs/heads/{0}', 'develop') || github.ref != format('refs/heads/{0}', 'main') }}
+          type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
         
     - name: Build and push Docker Client Container
       uses: docker/build-push-action@v3
       with:
         context: ./ConcurrenceClient
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}        
+        tags: ${{ steps.client-meta.outputs.tags }}
+        labels: ${{ steps.client-meta.outputs.labels }}        
