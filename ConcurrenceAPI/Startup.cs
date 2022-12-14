@@ -19,6 +19,17 @@ namespace ConcurrenceAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // configure CORS 
+            const string allowed_hosts = "localhost";
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins(allowed_hosts);
+                    policy.AllowCredentials();
+                });
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -40,6 +51,8 @@ namespace ConcurrenceAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
