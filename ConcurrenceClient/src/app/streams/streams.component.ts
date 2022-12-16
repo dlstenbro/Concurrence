@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @Component({
   selector: 'app-streams',
@@ -11,8 +12,9 @@ export class StreamsComponent implements OnInit {
   public api_url: string = "https://localhost:5001";
   public platform = "Twitch";
   public title = "Streams";
-  public streams ?: PlatformStreamList;
-  public test : any
+  public streams?: PlatformStreamList;
+  public gridRowHeight = "2:1";
+  public gridColumns = "4";
 
   public constructor( private http : HttpClient ) { }
 

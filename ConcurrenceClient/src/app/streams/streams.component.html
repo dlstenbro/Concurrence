@@ -1,40 +1,11 @@
 <div class="container mt-5">
 
   <h2>Angular Display Data </h2>
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Stream ID</th>
-        <th>Name</th>
-        <th>Streamer</th>
-        <th>Game ID</th>
-        <th>Game Name</th>
-        <th>Type</th>
-        <th>Viewer_Count</th>
-        <th>Started At</th>
-        <th>Language</th>
-        <th>Thumbnail Url</th>
-        <th>Tag IDs</th>
-        <th>Is Mature</th>
-      </tr>
-    </thead>
-    <tbody *ngIf="streams">
-      <tr *ngFor="let stream of streams['twitchStreams']">
-        <td>{{ stream?.user_id }}</td>
-        <td>{{ stream?.user_name }}</td>
-        <td>{{ stream?.game_id }}</td>
-        <td>{{ stream?.game_name }}</td>
-        <td>{{ stream?.type }}</td>
-        <td>{{ stream?.title }}</td>
-        <td>{{ stream?.viewer_count }}</td>
-        <td>{{ stream?.started_at }}</td>
-        <td>{{ stream?.language }}</td>
-        <td>{{ stream?.thumbnail_url }}</td>
-        <td>{{ stream?.tag_ids }}</td>
-        <td>{{ stream?.is_mature }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <mat-grid-list cols={{gridColumns}} rowHeight={{gridRowHeight}}>
+    <mat-grid-tile>1</mat-grid-tile>
+    <mat-grid-tile>2</mat-grid-tile>
+    <mat-grid-tile>3</mat-grid-tile>
+    <mat-grid-tile>4</mat-grid-tile>
+  </mat-grid-list>
 </div>
 
