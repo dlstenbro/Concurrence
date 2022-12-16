@@ -4,11 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace ConcurrenceAPI
 {
     public class Startup
     {
+        private const string _CORSName = "CORSSettings";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -20,14 +22,18 @@ namespace ConcurrenceAPI
         public void ConfigureServices(IServiceCollection services)
         {
             // configure CORS 
+            // TODO: use localhost for now
+            //       it's not recommended since there could be middleman attacks from other services on the machine
             const string allowed_hosts = "localhost";
 
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(policy =>
+                options.AddPolicy(_CORSName, policy =>
                 {
-                    policy.WithOrigins(allowed_hosts);
-                    policy.AllowCredentials();
+                    policy.WithOrigins()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .SetIsOriginAllowed( origin => new Uri(origin).Host == allowed_hosts);
                 });
             });
 
@@ -52,7 +58,7 @@ namespace ConcurrenceAPI
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(_CORSName);
 
             app.UseAuthorization();
 
