@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatGridListModule } from '@angular/material/grid-list';
 
 @Component({
   selector: 'app-streams',
@@ -10,11 +9,14 @@ import { MatGridListModule } from '@angular/material/grid-list';
 export class StreamsComponent implements OnInit {
 
   public api_url: string = "https://localhost:5001";
-  public platform = "Twitch";
-  public title = "Streams";
-  public streams?: PlatformStreamList;
-  public gridRowHeight = "2:1";
+  public platform: string = "Twitch";
+  public title: string = "Streams";
+  public platformStreamList?: Array<Stream> = [];
+  public gridRowHeight = "1.5:1.25";
   public gridColumns = "4";
+
+  public htmlHeader = this.platform + " " + this.title;
+  public htmlFooter = "testing 2022";
 
   public constructor( private http : HttpClient ) { }
 
@@ -29,12 +31,33 @@ export class StreamsComponent implements OnInit {
     };
 
     this.http.get(api_url, { headers })
-      .subscribe((data: any) => this.streams = data);
-  }
-}
+      .subscribe((data: any) => {
 
-interface PlatformStreamList {
-  "twitchStreams" ?: Array<Stream>;
+        var streams: Array<Stream> = data["twitchStreams"];
+
+        streams.forEach((v : Stream) => {
+          const new_stream: Stream = {
+            id: v.id,
+            user_id: v.user_id,
+            user_login: v.user_login,
+            user_name: v.user_name,
+            game_id: v.game_id,
+            game_name: v.game_name,
+            type: v.type,
+            title: v.title,
+            viewer_count: v.viewer_count,
+            started_at: v.started_at,
+            language: v.language,
+            thumbnail_url: v.thumbnail_url?.replace('{width}x{height}', '400x190'),
+            tag_ids: v.tag_ids,
+            is_mature: v.is_mature,
+            platform: "twitch"
+          };
+
+          this.platformStreamList?.push(new_stream);
+        })
+      });
+  }
 }
 
 interface Stream {
@@ -51,5 +74,6 @@ interface Stream {
   language      ?: string,
   thumbnail_url ?: string,
   tag_ids       ?: string,
-  is_mature	    ?: boolean
+  is_mature?: boolean,
+  platform?: string
 }

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ConcurrenceFrontEnd": {
+    "ConcurrenceClient": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ConcurrenceFrontEnd:build:production"
+              "browserTarget": "ConcurrenceClient:build:production"
             },
             "development": {
-              "browserTarget": "ConcurrenceFrontEnd:build:development"
+              "browserTarget": "ConcurrenceClient:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ConcurrenceFrontEnd:build"
+            "browserTarget": "ConcurrenceClient:build"
           }
         },
         "test": {

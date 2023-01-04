@@ -1,11 +1,22 @@
-<div class="container mt-5">
+<header>
+  {{htmlHeader}}
+</header>
+<br />
+  <div>
+    <mat-grid-list cols={{gridColumns}} rowHeight={{gridRowHeight}} >
+      <mat-grid-tile *ngFor="let p of platformStreamList"
+                     title="{{p.user_name}}">
 
-  <h2>Angular Display Data </h2>
-  <mat-grid-list cols={{gridColumns}} rowHeight={{gridRowHeight}}>
-    <mat-grid-tile>1</mat-grid-tile>
-    <mat-grid-tile>2</mat-grid-tile>
-    <mat-grid-tile>3</mat-grid-tile>
-    <mat-grid-tile>4</mat-grid-tile>
-  </mat-grid-list>
-</div>
+        <div class="container">
+          <header>{{p.user_name}}</header>
+          <img src="{{p.thumbnail_url}}" />
+          <footer>{{p.game_name}} {{p.viewer_count}}</footer>
+        </div>
 
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+<br />
+<footer>
+  {{htmlFooter}}
+</footer>

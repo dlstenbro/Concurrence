@@ -39,6 +39,7 @@ namespace ConcurrenceAPI.Models.Twitch
         public string thumbnail_url { get; set; }   = string.Empty;
         public List<string> tag_ids { get; set; }   = new List<string>();
         public bool is_mature { get; set; }         = false;
+        public string platform { get; set; }        = "twitch";
         #endregion Properties
     }
 }

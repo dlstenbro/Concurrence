@@ -40,7 +40,28 @@ $gradient-top-left: linear-gradient(225deg, #0b0033ff, #370031ff, #832232ff, #ce
 $gradient-bottom-left: linear-gradient(315deg, #0b0033ff, #370031ff, #832232ff, #ce8964ff, #eaf27cff);
 $gradient-radial: radial-gradient(#0b0033ff, #370031ff, #832232ff, #ce8964ff, #eaf27cff);
 
+header {
+    text-align:center;
+}
+
 h2 {
   color: mediumvioletred;
   font-size: larger
+}
+
+mat-grid-tile {
+    color: cornflowerblue;
+    align-content: center;
+    text-align: center;
+    outline: solid;
+    outline-color:black;
+    display:block;
+}
+.contatiner > div {
+  float: left;
+}
+
+footer {
+  text-align: center;
+  padding-bottom: 5px;
 }
