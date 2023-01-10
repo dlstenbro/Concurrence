@@ -4,17 +4,31 @@
 <br />
   <div>
     <mat-grid-list cols={{gridColumns}} rowHeight={{gridRowHeight}} >
-      <mat-grid-tile *ngFor="let p of platformStreamList"
-                     title="{{p.user_name}}">
-
-        <div class="container">
-          <header>{{p.user_name}}</header>
-          <img src="{{p.thumbnail_url}}" />
-          <footer>{{p.game_name}} {{p.viewer_count}}</footer>
-        </div>
-
+      <mat-grid-tile *ngFor="let p of (data?.streams == undefined ? null : data?.streams)"
+                    title="{{p.user_name}}">
+        <mat-card class="card">
+          <mat-card-header class="card_header">{{p.user_name}}</mat-card-header>
+          <img mat-card-img src="{{p.thumbnail_url}}">
+          <mat-card-content class="card_content">
+            {{p.title}}
+          </mat-card-content>
+          <mat-card-footer class="card_footer">Game: {{p.game_name}} Views: {{p.viewer_count}}</mat-card-footer>
+        </mat-card>
       </mat-grid-tile>
     </mat-grid-list>
+    <mat-paginator
+      #paginator
+      class="paginator"
+      (page)="handlePageEvent($event)"
+      [length]="length"
+      [pageSize]="pageSize"
+      [disabled]="disabled"
+      [showFirstLastButtons]="showFirstLastButtons"
+      [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
+      [hidePageSize]="hidePageSize"
+      [pageIndex]="pageIndex"
+      aria-label="Select page">
+    </mat-paginator>
   </div>
 <br />
 <footer>

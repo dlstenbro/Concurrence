@@ -47,7 +47,7 @@ namespace ConcurrenceAPI.Controllers
 
         [HttpGet]
         [Route("/")]
-        public object GetStreams()
+        public object GetStreams(int first, string after)
         {
             if(AuthDetails == null)
             {
@@ -56,6 +56,8 @@ namespace ConcurrenceAPI.Controllers
 
             RestRequest request = new RestRequest();
             RestClient client = new RestClient(_APIStreamsURL);
+            TwitchAPIModel model = new TwitchAPIModel();
+            StreamDataResponse response = new StreamDataResponse();
 
             request.Method = Method.Get;
             request.AddHeader("cache-control", "no-cache");
@@ -63,26 +65,49 @@ namespace ConcurrenceAPI.Controllers
             request.AddHeader("Authorization", (AuthDetails.token_type == "bearer" ? "Bearer " : "Basic ") + AuthDetails.access_token);
             request.AddHeader("Client-Id", _config["ClientId"]);
 
-            RestResponse res = client.Execute(request);
-            TwitchAPIModel model = new TwitchAPIModel();
-
-            if(res.IsSuccessful)
+            if (first > 0)
             {
-                JToken json = JObject.Parse(res.Content == null ? "" : res.Content)["data"];
+                request.AddOrUpdateParameter("first", first);
+            }
 
-                if (json != null && json.HasValues)
+            if (!string.IsNullOrEmpty(after))
+            {
+                request.AddOrUpdateParameter("after", after);
+            }
+
+            /* Process API requests here
+             * 
+             * We can build out our API response based on the "first" X number of streams
+             * and "after" will be the cursor that points to the next data set
+            */ 
+            RestResponse res = client.Execute(request);
+
+            if (res.IsSuccessful)
+            {
+                JToken json = JObject.Parse(res.Content == null ? "" : res.Content);
+
+                if (json.HasValues)
                 {
-                    foreach (JToken record in json)
+                    JToken data = json["data"];
+                    foreach (JToken record in data)
                     {
                         TwitchStreamMeta? meta = record.ToObject<TwitchStreamMeta>();
                         model.TwitchStreams.Add(meta);
                     }
+
+                    JToken page = json["pagination"]?["cursor"];
+
+                    response.Data = model;
+                    response.Page = page?.Value<string>();
                 }
             }
 
-            return model;
+            return response;
         }
         #endregion Routes
+
+        #region Methods
+        #endregion
 
         #region Properties
         private AuthToken AuthDetails { get; set; }

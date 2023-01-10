@@ -22,6 +22,13 @@ namespace ConcurrenceAPI.Models.Twitch
         }
         #endregion Properties
     }
+
+    public class StreamDataResponse
+    {
+        public TwitchAPIModel Data { get; set; }
+        public string Page { get; set; }
+    }
+
     public class TwitchStreamMeta
     {
         #region Properties
@@ -29,7 +36,7 @@ namespace ConcurrenceAPI.Models.Twitch
         public int user_id { get; set; }            = 0;
         public string user_login { get; set; }      = string.Empty;
         public string user_name { get; set; }       = string.Empty;
-        public int game_id { get; set; }            = 0;
+        public int? game_id { get; set; }            = 0;
         public string game_name { get; set; }       = string.Empty;
         public string type { get; set; }            = string.Empty;
         public string title { get; set; }           = string.Empty;

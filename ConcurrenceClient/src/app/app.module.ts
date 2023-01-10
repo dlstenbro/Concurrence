@@ -9,6 +9,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 @NgModule({
@@ -23,7 +26,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatGridListModule,
-    ScrollingModule
+    ScrollingModule,
+    MatCardModule,
+    MatSidenavModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

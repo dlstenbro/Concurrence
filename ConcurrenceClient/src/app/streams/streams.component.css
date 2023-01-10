@@ -53,12 +53,17 @@ mat-grid-tile {
     color: cornflowerblue;
     align-content: center;
     text-align: center;
-    outline: solid;
-    outline-color:black;
-    display:block;
 }
-.contatiner > div {
-  float: left;
+.card {
+    float:left;
+    outline:medium;
+    outline-color:black
+}
+.card_header {
+    text-align:center;
+}
+.card_footer {
+    text-align:center
 }
 
 footer {
