@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import {PageEvent} from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-streams',
@@ -33,6 +33,9 @@ export class StreamsComponent implements OnInit {
 
   pageEvent : PageEvent | undefined;
 
+  thumbnail_width : number = 400;
+  thumbnail_height : number = 190;
+
   public constructor( private http : HttpClient ) { }
 
   public ngOnInit(): void {
@@ -40,10 +43,27 @@ export class StreamsComponent implements OnInit {
   }
 
   handlePageEvent(e: PageEvent) {
-    this.UpdateData(this.api_url, e.pageSize, this.data?.page);
+    // keep track of what page has which streams on it
+    // by storing a list of streams in an array
+    console.log(e);
+
+    let previousPageIndex = e.previousPageIndex ? e.previousPageIndex : 0;
+    let back : boolean = false;
+    let forward : boolean = false;
+
+    if(previousPageIndex > e.pageIndex )
+    {
+      back = true;
+    }
+    else if(previousPageIndex < e.pageIndex)
+    {
+      forward = true;
+    }
+
+    this.UpdateData(this.api_url, e.pageSize, this.data?.page, forward, back);
   };
 
-  public UpdateData(api_url : string, first : number = 20, after : string = "") {
+  public UpdateData(api_url : string, first : number = 20, cursor : string = "", isForward : boolean = false, isBackward : boolean = false) {
     let headers = {
       "Content-Type": "application/json",
       "method": "GET"
@@ -54,14 +74,17 @@ export class StreamsComponent implements OnInit {
 
     request_uri = `${request_uri}?${paramFirst}`
 
-    if(after)
+    if(isForward)
     {
-      request_uri = `${request_uri}&after=${after}`
+      request_uri = `${request_uri}&after=${cursor}`
+    }
+    else if(isBackward){
+      request_uri = `${request_uri}&before=${cursor}`
     }
 
     this.http.get(request_uri, { headers })
       .subscribe((data: any) => {
-
+        console.log(data)
         let response : APIResponse = {
           streams : data["data"]["twitchStreams"],
           length : data["data"].length,
@@ -69,14 +92,13 @@ export class StreamsComponent implements OnInit {
         }
 
         response.streams.forEach((v : Stream) => {
-          v.thumbnail_url = v.thumbnail_url?.replace('{width}x{height}', '400x190')
+          v.thumbnail_url = v.thumbnail_url?.replace('{width}x{height}', `${this.thumbnail_width}x${this.thumbnail_height}`)
         });
 
         this.data = response;
     });
   }
 }
-
 
 interface APIResponse {
   streams : Array<Stream>,
