@@ -1,36 +1,105 @@
-<header>
-  {{htmlHeader}}
-</header>
-<br />
-  <div>
-    <mat-grid-list cols={{gridColumns}} rowHeight={{gridRowHeight}} >
-      <mat-grid-tile *ngFor="let p of (data?.streams == undefined ? null : data?.streams)"
-                    title="{{p.user_name}}">
+
+<mat-toolbar class="main_toolbar" color="primary">
+  <mat-toolbar-row class="button_toolbar">
+    <button mat-button (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-label>Concurrence</mat-label>
+    <span class="button_spacer"></span>
+    <div class="search_field_div">
+      <mat-form-field class="search_field" appearance="fill" type="text" (change)="handleSearchEvent($event)">
+        <mat-label>Search</mat-label>
+        <input matInput #input placeholder="Ex. Streamer name">
+        <mat-icon matSuffix>search</mat-icon>
+        <!--<mat-hint align="end">{{input.value.length}}/255</mat-hint>-->
+      </mat-form-field>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-drawer-container class="drawer-container">
+  <mat-drawer #drawer class="drawer" mode="side" closed>
+    <mat-list>
+      <mat-list-item>
+        <button mat-button>
+          <mat-icon>home</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button>
+          <mat-icon>about</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+    <section class="app_info">
+      {{htmlFooter}}
+    </section>
+  </mat-drawer>
+
+  <section>
+    <mat-grid-list cols={{gridColumns}} rowHeight={{gridRowHeight}}>
+      <mat-grid-tile *ngFor="let p of (data?.streams == undefined ? null : data?.streams)" title="{{p.user_name}}">
         <mat-card class="card">
-          <mat-card-header class="card_header">{{p.user_name}}</mat-card-header>
-          <img mat-card-img src="{{p.thumbnail_url}}">
-          <mat-card-content class="card_content">
-            {{p.title}}
+          <mat-card-header class="card_header">
+            <img mat-card-avatar alt="svgImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iMTYiIGhlaWdodD0iMTYiCnZpZXdCb3g9IjAgMCAxNiAxNiI+CjxwYXRoIGQ9Ik0gMiAxIEwgMSAzLjY0ODQzOCBMIDEgMTIgTCA0IDEyIEwgNCAxNCBMIDUuMzc1IDE0IEwgNy44NDM3NSAxMiBMIDEwLjUgMTIgTCAxNCA4LjI1IEwgMTQgMSBaIE0gMyAyIEwgMTMgMiBMIDEzIDcuNzE0ODQ0IEwgMTAuODc1IDEwIEwgNy4yMDMxMjUgMTAgTCA1IDExLjg3NSBMIDUgMTAgTCAzIDEwIFogTSA2IDQgTCA2IDggTCA3IDggTCA3IDQgWiBNIDkgNCBMIDkgOCBMIDEwIDggTCAxMCA0IFoiPjwvcGF0aD4KPC9zdmc+"/>
+            <span class="button_spacer"></span>
+            <mat-card-title-group class="card_title_group">
+              <mat-card-title>{{p.user_name}}</mat-card-title>
+              <mat-card-subtitle>{{p.game_name}}</mat-card-subtitle>
+            </mat-card-title-group>
+            <span class="button_spacer"></span>
+            <div class="card_menu_button">
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                  <mat-icon>dialpad</mat-icon>
+                </button>
+              </mat-menu>
+            </div>
+          </mat-card-header>
+          <mat-card-content class="card_content" flex>
+            <img mat-card-image src="{{p.thumbnail_url}}">
+            <mat-label>Viewers: {{p.viewer_count}}</mat-label>
+            <p>
+              {{p.title}}
+            </p>
           </mat-card-content>
-          <mat-card-footer class="card_footer">Game: {{p.game_name}} Views: {{p.viewer_count}}</mat-card-footer>
+          <mat-card-footer class="card_footer">
+            <mat-divider></mat-divider>
+            <mat-card-actions>
+              <button mat-icon-button>
+                <mat-icon>favorite</mat-icon>
+              </button>
+              <button mat-icon-button>
+                <mat-icon>open_in_new</mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card-footer>
         </mat-card>
       </mat-grid-tile>
     </mat-grid-list>
     <mat-paginator
-      #paginator
-      class="paginator"
-      (page)="handlePageEvent($event)"
-      [length]="length"
-      [pageSize]="pageSize"
-      [disabled]="disabled"
-      [showFirstLastButtons]="showFirstLastButtons"
-      [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
-      [hidePageSize]="hidePageSize"
-      [pageIndex]="pageIndex"
-      aria-label="Select page">
-    </mat-paginator>
-  </div>
-<br />
+    #paginator
+    class="paginator"
+    (page)="handlePageEvent($event)"
+    [length]="length"
+    [pageSize]="pageSize"
+    [disabled]="disabled"
+    [showFirstLastButtons]="showFirstLastButtons"
+    [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
+    [hidePageSize]="hidePageSize"
+    [pageIndex]="pageIndex"
+    aria-label="Select page">
+  </mat-paginator>
+  </section>
+
+</mat-drawer-container>
+
+
+<mat-divider></mat-divider>
+
 <footer>
-  {{htmlFooter}}
+
 </footer>

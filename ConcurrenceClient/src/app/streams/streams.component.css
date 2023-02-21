@@ -41,7 +41,7 @@ $gradient-bottom-left: linear-gradient(315deg, #0b0033ff, #370031ff, #832232ff, 
 $gradient-radial: radial-gradient(#0b0033ff, #370031ff, #832232ff, #ce8964ff, #eaf27cff);
 
 header {
-    text-align:center;
+    text-align:right;
 }
 
 h2 {
@@ -49,21 +49,58 @@ h2 {
   font-size: larger
 }
 
+.sizenav {
+  color: aquamarine;
+}
+
 mat-grid-tile {
     color: cornflowerblue;
     align-content: center;
     text-align: center;
 }
-.card {
-    float:left;
-    outline:medium;
-    outline-color:black
+
+.button_toolbar {
+  margin: right;
 }
+
+.button_spacer {
+  flex: 1 1 auto;
+}
+
+.card {
+    background:aquamarine;
+    max-width: 400px;
+    width: calc(100% - 50px);
+    height: calc(100% - 50px);
+
+    display:flex;
+    flex-direction: column;
+  }
+
 .card_header {
     text-align:center;
+    padding-bottom: 10px;
+
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0
 }
+
+.card_content {
+  flex-grow: 1;
+  overflow: auto;
+}
+
 .card_footer {
-    text-align:center
+    text-align:center;
+}
+
+.search_field_div {
+  font-size: 15px;
+}
+
+.app_info {
+
 }
 
 footer {

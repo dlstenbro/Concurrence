@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
+using Microsoft.AspNetCore.Http;
+using System.Runtime.InteropServices;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ConcurrenceAPI.Controllers
 {
@@ -18,6 +22,7 @@ namespace ConcurrenceAPI.Controllers
         #region API Endpoints
 
         private string _APIStreamsURL = @"https://api.twitch.tv/helix/streams";
+        private string _APIGamesURL = @"https://api.twitch.tv/helix/games";
         private string _APIAuthURL = @"https://id.twitch.tv/oauth2/token";
 
         #endregion API Endpoints
@@ -49,21 +54,8 @@ namespace ConcurrenceAPI.Controllers
         [Route("/")]
         public object GetStreams(int first, string after)
         {
-            if(AuthDetails == null)
-            {
-                AuthDetails = GetAuthToken();
-            }
-
-            RestRequest request = new RestRequest();
+            RestRequest request = CreateRestRequest();
             RestClient client = new RestClient(_APIStreamsURL);
-            TwitchAPIModel model = new TwitchAPIModel();
-            StreamDataResponse response = new StreamDataResponse();
-
-            request.Method = Method.Get;
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("content-type", "application/x-www-form-urlencoded");
-            request.AddHeader("Authorization", (AuthDetails.token_type == "bearer" ? "Bearer " : "Basic ") + AuthDetails.access_token);
-            request.AddHeader("Client-Id", _config["ClientId"]);
 
             if (first > 0)
             {
@@ -81,11 +73,56 @@ namespace ConcurrenceAPI.Controllers
              * and "after" will be the cursor that points to the next data set
             */ 
             RestResponse res = client.Execute(request);
+            StreamDataResponse response = GetAPIResponse(_APIStreamsURL);
+
+            return response;
+        }
+
+        [HttpGet]
+        [Route("/StreamSearch")]
+        public object GetResultsFromSearch(string user_login = "", string game_name = "")
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+
+            if(!string.IsNullOrEmpty(user_login))
+            {
+                parameters.Add("user_login", user_login);
+            }
+
+            if(!string.IsNullOrEmpty(game_name))
+            {
+                parameters.Add("game_name", game_name);
+            }
+
+            StreamDataResponse response = GetAPIResponse(_APIStreamsURL, parameters);
+
+            return response;
+        }
+        #endregion Routes
+
+        #region Methods
+
+        private StreamDataResponse GetAPIResponse(string url, Dictionary<string, string> parameters = null)
+        {
+            TwitchAPIModel model = new TwitchAPIModel();
+
+            RestRequest request = CreateRestRequest();
+            RestClient client = new RestClient(url);
+
+            if(parameters is not null && parameters.Keys.Count > 0)
+            {
+                foreach(KeyValuePair<string, string> key in parameters) {
+                    request.AddOrUpdateParameter(key.Key, key.Value);
+                }
+            }
+
+            RestResponse res = client.Execute(request);
+
+            StreamDataResponse response = new StreamDataResponse();
 
             if (res.IsSuccessful)
             {
                 JToken json = JObject.Parse(res.Content == null ? "" : res.Content);
-
                 if (json.HasValues)
                 {
                     JToken data = json["data"];
@@ -104,9 +141,24 @@ namespace ConcurrenceAPI.Controllers
 
             return response;
         }
-        #endregion Routes
 
-        #region Methods
+        private RestRequest CreateRestRequest()
+        {
+            if (AuthDetails == null)
+            {
+                AuthDetails = GetAuthToken();
+            }
+
+            RestRequest req_obj = new RestRequest();
+
+            req_obj.Method = Method.Get;
+            req_obj.AddHeader("cache-control", "no-cache");
+            req_obj.AddHeader("content-type", "application/x-www-form-urlencoded");
+            req_obj.AddHeader("Authorization", (AuthDetails.token_type == "bearer" ? "Bearer " : "Basic ") + AuthDetails.access_token);
+            req_obj.AddHeader("Client-Id", _config["ClientId"]);
+
+            return req_obj;
+        }
         #endregion
 
         #region Properties

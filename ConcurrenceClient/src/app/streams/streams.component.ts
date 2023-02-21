@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
+import { EnabledBlockingInitialNavigationFeature } from '@angular/router';
 
 @Component({
   selector: 'app-streams',
@@ -15,26 +16,28 @@ export class StreamsComponent implements OnInit {
 
   data?: APIResponse = {} as APIResponse;
 
-  gridRowHeight = "1.5:1.25";
+  gridRowHeight = "1.25:1.75";
   gridColumns = "5";
 
-  htmlHeader = this.platform + " " + this.title;
+  htmlHeader = this.title;
   htmlFooter = "Concurrence 2023";
 
-  length = 50;
+  length = 500;
   pageSize = 10;
   pageIndex = 0;
-  pageSizeOptions = [5, 10, 25];
+  pageSizeOptions = [15, 30, 45 ];
 
   hidePageSize = false;
   showPageSizeOptions = true;
-  showFirstLastButtons = true;
+  showFirstLastButtons = false;
   disabled = false;
 
   pageEvent : PageEvent | undefined;
 
-  thumbnail_width : number = 400;
-  thumbnail_height : number = 190;
+  thumbnail_width : number = 375;
+  thumbnail_height : number = 200;
+
+  changeCount : number = 0;
 
   public constructor( private http : HttpClient ) { }
 
@@ -42,7 +45,7 @@ export class StreamsComponent implements OnInit {
     this.UpdateData(this.api_url, this.pageSize, this.data?.page);
   }
 
-  handlePageEvent(e: PageEvent) {
+  public handlePageEvent(e: PageEvent) {
     // keep track of what page has which streams on it
     // by storing a list of streams in an array
     console.log(e);
@@ -59,28 +62,28 @@ export class StreamsComponent implements OnInit {
     {
       forward = true;
     }
-
-    this.UpdateData(this.api_url, e.pageSize, this.data?.page, forward, back);
+    this.pageSize = e.pageSize;
+    this.UpdateData(this.api_url, this.pageSize, this.data?.page, forward, back);
   };
 
-  public UpdateData(api_url : string, first : number = 20, cursor : string = "", isForward : boolean = false, isBackward : boolean = false) {
+  public handleSearchEvent(e: any){
+    let value : String = e.srcElement.value.toLowerCase();
     let headers = {
       "Content-Type": "application/json",
       "method": "GET"
     };
 
-    let request_uri = `${api_url}`
-    let paramFirst = `first=${first}`
+    let search_type = "name";
 
-    request_uri = `${request_uri}?${paramFirst}`
+    let search_parameters = `?`;
+    let request_uri = `${this.api_url}/StreamSearch`;
 
-    if(isForward)
+    if(search_type == "name")
     {
-      request_uri = `${request_uri}&after=${cursor}`
+      search_parameters = search_parameters + `user_login=${value}`;
     }
-    else if(isBackward){
-      request_uri = `${request_uri}&before=${cursor}`
-    }
+
+    request_uri = request_uri + search_parameters;
 
     this.http.get(request_uri, { headers })
       .subscribe((data: any) => {
@@ -89,7 +92,7 @@ export class StreamsComponent implements OnInit {
           streams : data["data"]["twitchStreams"],
           length : data["data"].length,
           page : data["page"]
-        }
+        };
 
         response.streams.forEach((v : Stream) => {
           v.thumbnail_url = v.thumbnail_url?.replace('{width}x{height}', `${this.thumbnail_width}x${this.thumbnail_height}`)
@@ -98,13 +101,49 @@ export class StreamsComponent implements OnInit {
         this.data = response;
     });
   }
-}
+
+  public RefreshData()
+  {
+    this.UpdateData(this.api_url, this.pageSize, this.data?.page);
+  }
+
+  public UpdateData(api_url : string, first : number = 20, cursor : string = "", isForward : boolean = false, isBackward : boolean = false) {
+    let headers = {
+      "Content-Type": "application/json",
+      "method": "GET"
+    };
+
+    let request_uri = `${api_url}`;
+    let paramFirst = `first=${first}`;
+
+    request_uri = `${request_uri}?${paramFirst}`;
+
+    if(isForward) { request_uri = `${request_uri}&after=${cursor}`; }
+    else if(isBackward){ request_uri = `${request_uri}&before=${cursor}`; }
+
+    this.http.get(request_uri, { headers })
+      .subscribe((data: any) => {
+        console.log(data)
+        let response : APIResponse = {
+          streams : data["data"]["twitchStreams"],
+          length : data["data"].length,
+          page : data["page"]
+        };
+
+        response.streams.forEach((v : Stream) => {
+          v.thumbnail_url = v.thumbnail_url?.replace('{width}x{height}', `${this.thumbnail_width}x${this.thumbnail_height}`)
+        });
+
+        this.data = response;
+    });
+  }
+};
 
 interface APIResponse {
   streams : Array<Stream>,
   length: number,
   page ?: string
-}
+};
 
 interface Stream {
   id            ?: string,
@@ -122,5 +161,5 @@ interface Stream {
   tag_ids       ?: string,
   is_mature?: boolean,
   platform?: string
-}
+};
 
