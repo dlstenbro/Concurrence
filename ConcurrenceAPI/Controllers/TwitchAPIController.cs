@@ -54,17 +54,16 @@ namespace ConcurrenceAPI.Controllers
         [Route("/")]
         public object GetStreams(int first, string after)
         {
-            RestRequest request = CreateRestRequest();
-            RestClient client = new RestClient(_APIStreamsURL);
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
 
             if (first > 0)
             {
-                request.AddOrUpdateParameter("first", first);
+                parameters.Add("first", first.ToString());
             }
 
             if (!string.IsNullOrEmpty(after))
             {
-                request.AddOrUpdateParameter("after", after);
+                parameters.Add("after", after);
             }
 
             /* Process API requests here
@@ -72,8 +71,7 @@ namespace ConcurrenceAPI.Controllers
              * We can build out our API response based on the "first" X number of streams
              * and "after" will be the cursor that points to the next data set
             */ 
-            RestResponse res = client.Execute(request);
-            StreamDataResponse response = GetAPIResponse(_APIStreamsURL);
+            StreamDataResponse response = GetAPIResponse(_APIStreamsURL, parameters);
 
             return response;
         }
