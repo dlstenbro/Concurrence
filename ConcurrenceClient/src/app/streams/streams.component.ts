@@ -23,9 +23,9 @@ export class StreamsComponent implements OnInit {
   htmlFooter = "Concurrence 2023";
 
   length = 500;
-  pageSize = 10;
   pageIndex = 0;
   pageSizeOptions = [15, 30, 45 ];
+  pageSize = this.pageSizeOptions[0];
 
   hidePageSize = false;
   showPageSizeOptions = true;
