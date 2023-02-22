@@ -4,11 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace ConcurrenceAPI
 {
     public class Startup
     {
+        private const string _CORSName = "CORSSettings";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -19,6 +21,21 @@ namespace ConcurrenceAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // configure CORS 
+            // TODO: use localhost for now
+            //       it's not recommended since there could be middleman attacks from other services on the machine
+            const string allowed_hosts = "localhost";
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_CORSName, policy =>
+                {
+                    policy.WithOrigins()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .SetIsOriginAllowed( origin => new Uri(origin).Host == allowed_hosts);
+                });
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -40,6 +57,8 @@ namespace ConcurrenceAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(_CORSName);
 
             app.UseAuthorization();
 

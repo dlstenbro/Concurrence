@@ -1,0 +1,71 @@
+name: Create Docker Containers
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_API: concurrence-api
+  IMAGE_NAME_CLIENT: concurrence-client
+  DEV_TAG: latest
+  RELEASE_TAG: v0.1.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Add SHORT_SHA env property with commit short sha
+      run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
+    - name: Checking out with tag ${SHORT_SHA}
+      uses: actions/checkout@v3
+    
+    - name: Log into registry ${{ env.REGISTRY }}
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract Docker Metadata
+      id: api-meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME_API }}
+        tags: |
+          # set latest tag for master branch
+          type=raw,value=${{env.RELEASE_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+          type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
+          type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
+          
+    - name: Build and push Docker API Container
+      uses: docker/build-push-action@v3
+      with:
+        context: ./ConcurrenceAPI
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.api-meta.outputs.tags }}
+        labels: ${{ steps.api-meta.outputs.labels }}
+
+    - name: Extract Docker Metadata
+      id: client-meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME_CLIENT }}
+        tags: |
+          # set latest tag for master branch
+          type=raw,value=${{env.RELEASE_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+          type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
+          #type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
+        
+    - name: Build and push Docker Client Container
+      uses: docker/build-push-action@v3
+      with:
+        context: ./ConcurrenceClient
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.client-meta.outputs.tags }}
+        labels: ${{ steps.client-meta.outputs.labels }}        
