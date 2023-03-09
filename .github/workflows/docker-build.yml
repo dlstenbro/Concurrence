@@ -67,7 +67,7 @@ jobs:
             #type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
 
   build-images:
-    if: triggered-branch.steps.branch-name.outputs == 'main'
+    if: jobs.triggered-branch.steps.branch-name.outputs == 'main'
     needs: [ extract-docker-metadata, triggered-branch ]
 
     runs-on: ubuntu-latest
