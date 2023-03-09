@@ -12,6 +12,13 @@ env:
   RELEASE_TAG: v0.1.0
 
 jobs:
+  triggered-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
   registry-login:
     runs-on: ubuntu-latest
     steps:
@@ -58,7 +65,9 @@ jobs:
             #type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
 
   build-images:
+    if: ${{ steps.branch-name.outputs.current_branch == 'main' }}
     needs: extract-docker-metadata
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
