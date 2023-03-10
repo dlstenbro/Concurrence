@@ -59,7 +59,7 @@ jobs:
             type=raw,value=${{env.DEV_TAG}},enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
             #type=raw,value=${SHORT_SHA},enable=${{ github.ref != format('refs/heads/{0}', 'develop') && github.ref != format('refs/heads/{0}', 'main') }}
 
-      - name: Build and push Docker API Container
+      - name: Build and Push API Container
         uses: docker/build-push-action@v3
         with:
           context: ./ConcurrenceAPI
@@ -67,7 +67,7 @@ jobs:
           tags: ${{ steps.api-meta.outputs.tags }}
           labels: ${{ steps.api-meta.outputs.labels }}
 
-      - name: Build and push Docker Client Container
+      - name: Build and Push Client Container
         uses: docker/build-push-action@v3
         with:
           context: ./ConcurrenceClient
