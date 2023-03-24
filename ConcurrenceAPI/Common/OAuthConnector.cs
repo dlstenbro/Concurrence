@@ -2,6 +2,8 @@
 using System.Text.Json;
 using RestSharp;
 
+using ConcurrenceAPI.Models.Secrets;
+
 namespace ConcurrenceAPI.Common
 {
     public class OAuthConnector
@@ -16,7 +18,7 @@ namespace ConcurrenceAPI.Common
             _request = new RestRequest();
         }
 
-        public AuthToken GetAuthToken(string grant_type, string client_id, string access_token)
+        public OAuthResponse GetAuthToken(string grant_type, string client_id, string access_token)
         {
             //https://id.twitch.tv/oauth2/token?client_id={{client_id}}&client_secret={{client_secret}}&grant_type=client_credentials&redirect_uri=http://localhost:3000
             string parameter_vals = $"grant_type={grant_type}&client_id={client_id}&client_secret={access_token}";
@@ -29,7 +31,7 @@ namespace ConcurrenceAPI.Common
 
             RestResponse response = _client.Execute(_request);
 
-            AuthToken? tknData = JsonSerializer.Deserialize<AuthToken>(response.Content);
+            OAuthResponse? tknData = JsonSerializer.Deserialize<OAuthResponse>(response.Content);
 
             return tknData;
         }

@@ -1,13 +1,7 @@
-﻿using ConcurrenceAPI.Controllers;
-using ConcurrenceAPI.Interfaces;
-using Microsoft.Extensions.Configuration;
-
-namespace ConcurrenceAPI.Models
+﻿namespace ConcurrenceAPI.Models.YouTube
 {
-    public class YoutubeLiveModel : APIController, IAPIController
+    public static class YoutubeLiveModel
     {
-        public YoutubeLiveModel(IConfiguration configuration) : base(configuration)
-        {
-        }
+
     }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
-import { EnabledBlockingInitialNavigationFeature } from '@angular/router';
 
 @Component({
   selector: 'app-streams',
@@ -139,13 +138,13 @@ export class StreamsComponent implements OnInit {
   }
 };
 
-interface APIResponse {
+type APIResponse = {
   streams : Array<Stream>,
   length: number,
   page ?: string
 };
 
-interface Stream {
+type Stream = {
   id            ?: string,
   user_id	      ?: string,
   user_login    ?: string,

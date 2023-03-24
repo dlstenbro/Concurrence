@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using ConcurrenceAPI.Common;
 
 namespace ConcurrenceAPI.Models.Twitch
 {
