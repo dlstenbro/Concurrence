@@ -1,16 +1,9 @@
-﻿using ConcurrenceAPI.Common;
-using ConcurrenceAPI.Models.Twitch;
-using ConcurrenceAPI.Models.Secrets;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
-using RestSharp;
-using ConcurrenceAPI.Interfaces;
+
 using ConcurrenceAPI.Platforms;
-using Microsoft.AspNetCore.WebUtilities;
+
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 
 namespace ConcurrenceAPI.Controllers
 {
@@ -20,9 +13,9 @@ namespace ConcurrenceAPI.Controllers
     {
         protected readonly IConfiguration _config;
 
+        #region Platforms
         private TwitchAPI _twitchAPI;
-
-        #region Other
+        private YoutubeLiveAPI _youtubeLiveAPI;
         #endregion
 
         #region Constructor
@@ -30,6 +23,7 @@ namespace ConcurrenceAPI.Controllers
         {
             _config = configuration;
             _twitchAPI = new TwitchAPI(_config["ClientId"], _config["ClientSecret"]);
+            _youtubeLiveAPI = new YoutubeLiveAPI(_config["YTAPIKey"]);
         }
         #endregion Constructor
 
@@ -49,5 +43,39 @@ namespace ConcurrenceAPI.Controllers
             return _twitchAPI.StreamSearchResults(user_login, game_name);
         }
         #endregion
+
+
+        [HttpGet]
+        [Route("/twitchStreams")]
+        public object GetTwtichStreams(string first = "25", string after="")
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>
+            {
+                { "first", first },
+                { "after", after  }
+            };
+
+
+            return _twitchAPI.GetAPIResponse(parameters);
+        }
+
+
+        [HttpGet]
+        [Route("/youtubelive")]
+        public object GetYoutubeLive(string part = "snippet", string eventType = "live", string maxResults = "25", string q = "games", string type = "video")
+        {
+            //https://youtube.googleapis.com/youtube/v3/search?part=snippet&eventType=live&maxResults=25&q=news&type=video
+
+            Dictionary<string, string> parameters = new Dictionary<string, string>
+            {
+                { "part", part },
+                { "eventType", eventType },
+                { "maxResults", maxResults },
+                { "q", q },
+                { "type", type }
+            };
+
+            return _youtubeLiveAPI.GetAPIResponse(parameters);
+        }
     }
 }

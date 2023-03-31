@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
 using RestSharp;
+
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 using ConcurrenceAPI.Common;
 using ConcurrenceAPI.Interfaces;
@@ -51,9 +53,8 @@ namespace ConcurrenceAPI.Platforms
              * We can build out our API response based on the "first" X number of streams
              * and "after" will be the cursor that points to the next data set
             */
-            StreamDataResponse response = GetAPIResponse(_TwitchStreamsURL, parameters);
-
-            return response;
+            
+            return GetAPIResponse(parameters);
         }
 
         public object StreamSearchResults(string user_login = "", string game_name = "")
@@ -70,9 +71,7 @@ namespace ConcurrenceAPI.Platforms
                 parameters.Add("game_name", game_name);
             }
 
-            StreamDataResponse response = GetAPIResponse(_TwitchStreamsURL, parameters);
-
-            return response;
+            return GetAPIResponse(parameters);
         }
         public OAuthResponse GetAuthToken(string auth_url, string client_id, string client_secret)
         {
@@ -95,10 +94,8 @@ namespace ConcurrenceAPI.Platforms
             return req;
         }
 
-        public StreamDataResponse GetAPIResponse(string url, Dictionary<string, string> parameters = null)
+        public object GetAPIResponse(Dictionary<string, string> parameters = null)
         {
-            TwitchAPIModel model = new TwitchAPIModel();
-
             RestRequest req = CreateRestRequest(_oAuth);
 
             if (parameters is not null && parameters.Keys.Count > 0)
@@ -109,31 +106,21 @@ namespace ConcurrenceAPI.Platforms
                 }
             }
 
-            RestClient client = new RestClient(url);
+            RestClient client = new RestClient(_TwitchStreamsURL);
             RestResponse res = client.Execute(req);
-
-            StreamDataResponse response = new StreamDataResponse();
 
             if (res.IsSuccessful)
             {
-                JToken json = JObject.Parse(res.Content == null ? "" : res.Content);
-                if (json.HasValues)
-                {
-                    JToken data = json["data"];
-                    foreach (JToken record in data)
-                    {
-                        TwitchStreamMeta? meta = record.ToObject<TwitchStreamMeta>();
-                        model.TwitchStreams.Add(meta);
-                    }
-
-                    JToken page = json["pagination"]?["cursor"];
-
-                    response.Data = model;
-                    response.Page = page?.Value<string>();
-                }
+                TwitchAPIModel? model = JsonSerializer.Deserialize<TwitchAPIModel>(res.Content == null ? "" : res.Content);
+                return model;
             }
+            
+            return res.Content;
+        }
 
-            return response;
+        public RestRequest CreateRestRequest()
+        {
+            return CreateRestRequest(_oAuth);
         }
         #endregion
     }
