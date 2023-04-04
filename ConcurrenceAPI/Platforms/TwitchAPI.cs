@@ -109,13 +109,7 @@ namespace ConcurrenceAPI.Platforms
             RestClient client = new RestClient(_TwitchStreamsURL);
             RestResponse res = client.Execute(req);
 
-            if (res.IsSuccessful)
-            {
-                TwitchAPIModel? model = JsonSerializer.Deserialize<TwitchAPIModel>(res.Content == null ? "" : res.Content);
-                return model;
-            }
-            
-            return res.Content;
+            return JsonSerializer.Deserialize<TwitchAPIModel>(res.Content == null ? "" : res.Content);
         }
 
         public RestRequest CreateRestRequest()

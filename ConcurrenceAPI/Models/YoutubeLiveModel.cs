@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Web;
 
 namespace ConcurrenceAPI.Models.YouTube
 {
@@ -28,9 +30,10 @@ namespace ConcurrenceAPI.Models.YouTube
                 public string videoId { get; set; }
             }
             public Snippet snippet { get; set; }
+            public string platform { get; set; } = "Youtube";
             public class Snippet
             {
-                public string publishedAt { get; set; }
+                public DateTime publishedAt { get; set; }
                 public string channelId { get; set; }
                 public string title { get; set; }
                 public string description { get; set; }
@@ -63,7 +66,7 @@ namespace ConcurrenceAPI.Models.YouTube
                 }
                 public string channelTitle { get; set; }
                 public string liveBroadcastContent { get; set; }
-                public string publishTime { get; set; }
+                public DateTime publishTime { get; set; }
             }
 
         }

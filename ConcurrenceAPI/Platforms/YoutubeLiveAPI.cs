@@ -46,9 +46,7 @@ namespace ConcurrenceAPI.Platforms
             req.AddOrUpdateParameter("key", _api_key);
             RestResponse res = client.Execute(req);
 
-            YoutubeLiveModel? model = JsonSerializer.Deserialize<YoutubeLiveModel>(res.Content);
-
-            return model;
+            return JsonSerializer.Deserialize<YoutubeLiveModel>(res.Content);
         }
 
         public OAuthResponse GetAuthToken(string auth_url, string client_id, string client_secret)

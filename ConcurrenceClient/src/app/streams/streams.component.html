@@ -38,13 +38,13 @@
 
   <section>
     <mat-grid-list cols={{gridColumns}} rowHeight={{gridRowHeight}}>
-      <mat-grid-tile *ngFor="let p of (data?.streams == undefined ? null : data?.streams)" title="{{p.user_name}}">
+      <mat-grid-tile *ngFor="let p of (data?.streams == undefined ? null : data?.streams)" title="{{p.game_name}}">
         <mat-card class="card">
           <mat-card-header class="card_header">
-            <img mat-card-avatar alt="svgImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iMTYiIGhlaWdodD0iMTYiCnZpZXdCb3g9IjAgMCAxNiAxNiI+CjxwYXRoIGQ9Ik0gMiAxIEwgMSAzLjY0ODQzOCBMIDEgMTIgTCA0IDEyIEwgNCAxNCBMIDUuMzc1IDE0IEwgNy44NDM3NSAxMiBMIDEwLjUgMTIgTCAxNCA4LjI1IEwgMTQgMSBaIE0gMyAyIEwgMTMgMiBMIDEzIDcuNzE0ODQ0IEwgMTAuODc1IDEwIEwgNy4yMDMxMjUgMTAgTCA1IDExLjg3NSBMIDUgMTAgTCAzIDEwIFogTSA2IDQgTCA2IDggTCA3IDggTCA3IDQgWiBNIDkgNCBMIDkgOCBMIDEwIDggTCAxMCA0IFoiPjwvcGF0aD4KPC9zdmc+"/>
+            <img mat-card-avatar alt="svgImg" src="{{platform_icon_youtube}}"/>
             <span class="button_spacer"></span>
             <mat-card-title-group class="card_title_group">
-              <mat-card-title>{{p.user_name}}</mat-card-title>
+              <mat-card-title>{{p.creator_name}}</mat-card-title>
               <mat-card-subtitle>{{p.game_name}}</mat-card-subtitle>
             </mat-card-title-group>
             <span class="button_spacer"></span>
@@ -60,8 +60,8 @@
             </div>
           </mat-card-header>
           <mat-card-content class="card_content" flex>
-            <img mat-card-image src="{{p.thumbnail_url}}">
-            <mat-label>Viewers: {{p.viewer_count}}</mat-label>
+            <img mat-card-image src="{{p.thumbnail_img}}">
+            <mat-label>Viewers: {{p.viewers}}</mat-label>
             <p>
               {{p.title}}
             </p>

@@ -23,7 +23,7 @@ namespace ConcurrenceAPI.Models.Twitch
             public string game_name { get; set; }
             public string type { get; set; }
             public string title { get; set; }
-            public int? viewer_count { get; set; }
+            public int viewer_count { get; set; }
             public DateTime started_at { get; set; }
             public string language { get; set; }
             public string thumbnail_url { get; set; }
