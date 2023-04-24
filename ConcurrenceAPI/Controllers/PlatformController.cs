@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-using ConcurrenceAPI.Platforms;
-
 using System.Collections.Generic;
 using System.Text.Json;
+
 using ConcurrenceAPI.Models.Twitch;
 using ConcurrenceAPI.Models.YouTube;
 using ConcurrenceAPI.Models;
+
+using ConcurrenceAPI.Platforms;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using static ConcurrenceAPI.Models.YouTube.YoutubeLiveSearch.Item;
 using System;
-using System.ComponentModel.Design;
 
 namespace ConcurrenceAPI.Controllers
 {
@@ -39,57 +41,7 @@ namespace ConcurrenceAPI.Controllers
         [Route("/")]
         public object ShowDefault()
         {
-            /*
-             * Merge datasets into one unified dataset for concurrence to send back to clients.
-             * 
-             * May be a better way to do this but for now, Get JSON responses from all the platforms
-             * then begin to convert them into the format we want to use for ConcurrenceModel.
-            */
-            ConcurrenceModel model = new ConcurrenceModel();
-            model.streams = new List<ConcurrenceModel.Data>();
-
-            TwitchAPIModel twitch_streams = (TwitchAPIModel)GetTwitchStreams();
-            YoutubeLiveModel youtubeLive_streams = (YoutubeLiveModel)GetYoutubeLive();
-            
-            /*
-             * For right now, store paging information for each platform underneath another section
-             * in the response. When "next" or "previous" is used on the angular side, 
-             * we can just reference those tokens easier.
-             */
-            model.youtubelive_pageination = youtubeLive_streams.nextPageToken;
-            model.twitch_pageination = twitch_streams.pagination.cursor;
-
-            foreach (var s in twitch_streams.data)
-            {
-                model.streams.Add(new ConcurrenceModel.Data()
-                {
-                    id = s.id,
-                    game_name = s.game_name,
-                    creator_name = s.user_name,
-                    title = s.title,
-                    thumbnail_img = s.thumbnail_url,
-                    tags = s.tag_ids,
-                    platform = s.platform,
-                    language = s.language,
-                    viewers = s.viewer_count,
-                    dateTime = s.started_at
-                });
-            }
-
-            foreach(var s in youtubeLive_streams.items)
-            {
-                model.streams.Add(new ConcurrenceModel.Data()
-                {
-                    id = s.id.videoId,
-                    creator_name = s.snippet.channelTitle,
-                    title = s.snippet.title,
-                    dateTime = s.snippet.publishTime,
-                    thumbnail_img = s.snippet.thumbnails.high.url,
-                    platform = s.platform,
-                }) ;
-            }
-
-            return model;
+            return populateModel();
         }
 
         [HttpGet]
@@ -101,38 +53,102 @@ namespace ConcurrenceAPI.Controllers
         }
         #endregion
 
-
         [HttpGet]
         [Route("/twitchStreams")]
         public object GetTwitchStreams(string first = "25", string after="")
         {
-            Dictionary<string, string> parameters = new Dictionary<string, string>
+            Dictionary<string, string> parameters = new Dictionary<string, string>()
             {
                 { "first", first },
                 { "after", after  }
             };
 
 
-            return _twitchAPI.GetAPIResponse(parameters);
+            return _twitchAPI.GetStreams(parameters);
         }
 
 
         [HttpGet]
         [Route("/youtubelive")]
-        public object GetYoutubeLive(string part = "snippet", string eventType = "live", string maxResults = "25", string q = "games", string type = "video")
+        public object GetYoutubeLive(string part = "snippet", string eventType = "live", string maxResults = "25", string videoCategoryId = "20", string type = "video", string order ="viewCount", string q="gaming")
         {
             //https://youtube.googleapis.com/youtube/v3/search?part=snippet&eventType=live&maxResults=25&q=news&type=video
 
-            Dictionary<string, string> parameters = new Dictionary<string, string>
+            Dictionary<string, string> parameters = new Dictionary<string, string>()
             {
                 { "part", part },
                 { "eventType", eventType },
                 { "maxResults", maxResults },
                 { "q", q },
+                { "videoCategoryId", videoCategoryId},
+                { "order", order},
                 { "type", type }
             };
 
-            return _youtubeLiveAPI.GetAPIResponse(parameters);
+            return _youtubeLiveAPI.GetStreams(parameters);
+        }
+
+        private ConcurrenceModel populateModel()
+        {
+            /*
+             * Merge datasets into one unified dataset for concurrence to send back to clients.
+             * 
+             * May be a better way to do this but for now, Get JSON responses from all the platforms
+             * then begin to convert them into the format we want to use for ConcurrenceModel.
+            */
+            ConcurrenceModel model = new ConcurrenceModel()
+            {
+                streams = new List<ConcurrenceModel.Data>()
+            };
+
+            TwitchAPIModel twitch_streams = JsonSerializer.Deserialize<TwitchAPIModel>((JsonDocument)GetTwitchStreams());
+            YoutubeLiveVideos youtubeLive_streams = (YoutubeLiveVideos)GetYoutubeLive();
+
+            /*
+             * For right now, store paging information for each platform underneath another section
+             * in the response. When "next" or "previous" is used on the angular side, 
+             * we can just reference those tokens easier.
+             */
+            model.youtubelive_pageination = youtubeLive_streams.pageToken;
+            model.twitch_pageination = twitch_streams?.pagination.cursor;
+
+            foreach (var s in twitch_streams.data)
+            {
+                model.streams.Add(new ConcurrenceModel.Data()
+                {
+                    creator_name = s.user_name,
+                    dateTime = s.started_at,
+                    game_name = s.game_name,
+                    id = s.id,
+                    language = s.language,
+                    platform = s.platform,
+                    tags = s.tag_ids,
+                    thumbnail_img = s.thumbnail_url,
+                    title = s.title,
+                    viewers = s.viewer_count
+                });
+            }
+
+            foreach (YoutubeLiveVideo s in youtubeLive_streams.videos)
+            {
+                var item = s.items[0];
+
+                model.streams.Add(new ConcurrenceModel.Data()
+                {
+                    creator_name = item.snippet.channelTitle,
+                    dateTime = item.liveStreamingDetails.actualStartTime,
+                    game_name = item?.snippet?.refChannelName,
+                    id = item.id,
+                    language = item.snippet.defaultLanguage,
+                    platform = item.platform,
+                    tags = item.snippet.tags,
+                    thumbnail_img = item.snippet.thumbnails.high.url,
+                    title = item.snippet.title,
+                    viewers = string.IsNullOrEmpty(item.liveStreamingDetails.concurrentViewers) ? 0 : int.Parse(item.liveStreamingDetails.concurrentViewers)
+                });
+            }
+
+            return model;
         }
     }
 }

@@ -34,27 +34,15 @@ namespace ConcurrenceAPI.Platforms
         #endregion Constructor
 
         #region Methods
-        public object GetStreams(int first, string after)
+        public object GetStreams(Dictionary<string, string> parameters)
         {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-
-            if (first > 0)
-            {
-                parameters.Add("first", first.ToString());
-            }
-
-            if (!string.IsNullOrEmpty(after))
-            {
-                parameters.Add("after", after);
-            }
-
             /* Process API requests here
              * 
              * We can build out our API response based on the "first" X number of streams
              * and "after" will be the cursor that points to the next data set
             */
             
-            return GetAPIResponse(parameters);
+            return GetAPIResponse(_TwitchStreamsURL, parameters);
         }
 
         public object StreamSearchResults(string user_login = "", string game_name = "")
@@ -71,7 +59,7 @@ namespace ConcurrenceAPI.Platforms
                 parameters.Add("game_name", game_name);
             }
 
-            return GetAPIResponse(parameters);
+            return GetAPIResponse(_TwitchStreamsURL, parameters);
         }
         public OAuthResponse GetAuthToken(string auth_url, string client_id, string client_secret)
         {
@@ -94,7 +82,7 @@ namespace ConcurrenceAPI.Platforms
             return req;
         }
 
-        public object GetAPIResponse(Dictionary<string, string> parameters = null)
+        public JsonDocument GetAPIResponse(string url, Dictionary<string, string> parameters = null)
         {
             RestRequest req = CreateRestRequest(_oAuth);
 
@@ -106,10 +94,10 @@ namespace ConcurrenceAPI.Platforms
                 }
             }
 
-            RestClient client = new RestClient(_TwitchStreamsURL);
+            RestClient client = new RestClient(url);
             RestResponse res = client.Execute(req);
 
-            return JsonSerializer.Deserialize<TwitchAPIModel>(res.Content == null ? "" : res.Content);
+            return JsonDocument.Parse(res.Content);
         }
 
         public RestRequest CreateRestRequest()
