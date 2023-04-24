@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
-import { EnabledBlockingInitialNavigationFeature } from '@angular/router';
 
 @Component({
   selector: 'app-streams',
@@ -11,7 +10,9 @@ import { EnabledBlockingInitialNavigationFeature } from '@angular/router';
 export class StreamsComponent implements OnInit {
 
   api_url: string = "https://localhost:5001";
-  platform: string = "Twitch";
+  platform_icon_twitch: string = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iMTYiIGhlaWdodD0iMTYiCnZpZXdCb3g9IjAgMCAxNiAxNiI+CjxwYXRoIGQ9Ik0gMiAxIEwgMSAzLjY0ODQzOCBMIDEgMTIgTCA0IDEyIEwgNCAxNCBMIDUuMzc1IDE0IEwgNy44NDM3NSAxMiBMIDEwLjUgMTIgTCAxNCA4LjI1IEwgMTQgMSBaIE0gMyAyIEwgMTMgMiBMIDEzIDcuNzE0ODQ0IEwgMTAuODc1IDEwIEwgNy4yMDMxMjUgMTAgTCA1IDExLjg3NSBMIDUgMTAgTCAzIDEwIFogTSA2IDQgTCA2IDggTCA3IDggTCA3IDQgWiBNIDkgNCBMIDkgOCBMIDEwIDggTCAxMCA0IFoiPjwvcGF0aD4KPC9zdmc+";
+  platform_icon_youtube: string = "https://www.svgrepo.com/show/156038/youtube.svg"
+
   title: string = "Streams";
 
   data?: APIResponse = {} as APIResponse;
@@ -89,13 +90,13 @@ export class StreamsComponent implements OnInit {
       .subscribe((data: any) => {
         console.log(data)
         let response : APIResponse = {
-          streams : data["data"]["twitchStreams"],
-          length : data["data"].length,
-          page : data["page"]
+          streams : data["streams"],
+          length : data["streams"].length,
+          page : data["streams"]
         };
 
         response.streams.forEach((v : Stream) => {
-          v.thumbnail_url = v.thumbnail_url?.replace('{width}x{height}', `${this.thumbnail_width}x${this.thumbnail_height}`)
+          v.creator_name = v.creator_name?.replace('{width}x{height}', `${this.thumbnail_width}x${this.thumbnail_height}`)
         });
 
         this.data = response;
@@ -125,13 +126,13 @@ export class StreamsComponent implements OnInit {
       .subscribe((data: any) => {
         console.log(data)
         let response : APIResponse = {
-          streams : data["data"]["twitchStreams"],
-          length : data["data"].length,
-          page : data["page"]
+          streams : data["streams"],
+          length : data["streams"].length,
+          page : data["streams"]
         };
 
         response.streams.forEach((v : Stream) => {
-          v.thumbnail_url = v.thumbnail_url?.replace('{width}x{height}', `${this.thumbnail_width}x${this.thumbnail_height}`)
+          v.thumbnail_img = v.thumbnail_img?.replace('{width}x{height}', `${this.thumbnail_width}x${this.thumbnail_height}`)
         });
 
         this.data = response;
@@ -139,27 +140,23 @@ export class StreamsComponent implements OnInit {
   }
 };
 
-interface APIResponse {
+type APIResponse = {
   streams : Array<Stream>,
   length: number,
   page ?: string
 };
 
-interface Stream {
+type Stream = {
   id            ?: string,
-  user_id	      ?: string,
-  user_login    ?: string,
-  user_name     ?: string,
-  game_id       ?: number,
+  creator_name  ?: string,
   game_name	    ?: string,
   type          ?: string,
   title	        ?: string,
-  viewer_count  ?: number,
-  started_at    ?: string,
+  viewers       ?: number,
+  dateTime      ?: string,
   language      ?: string,
-  thumbnail_url ?: string,
+  thumbnail_img ?: string,
   tag_ids       ?: string,
-  is_mature?: boolean,
-  platform?: string
+  //is_mature?: boolean,
+  platform      ?: string
 };
-
