@@ -1,11 +1,23 @@
 #stage 1
-FROM node:latest as node
+ARG DEPLOYMENT_TYPE
+
+FROM node:latest as builder
+
+ARG ENV_DEPLOYMENT_TYPE
+ENV DEPLOYMENT_TYPE=${ENV_DEPLOYMENT_TYPE}
+
 WORKDIR /app
 COPY . .
-RUN npm install
-RUN npm run build --prod
+RUN npm install && npm install -g @angular/cli
+CMD npm run build -- --configuration=${DEPLOYMENT_TYPE}
 
 #stage 2
+ARG DEPLOYMENT_TYPE
+
 FROM nginx:alpine
-COPY --from=node /app/dist/concurrence-client /usr/share/nginx/html
+
+ARG ENV_DEPLOYMENT_TYPE
+ENV DEPLOYMENT_TYPE=${ENV_DEPLOYMENT_TYPE}
+
+COPY --from=builder /app/dist/concurrence-client /usr/share/nginx/html
 EXPOSE 80/TCP
