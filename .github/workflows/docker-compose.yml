@@ -1,0 +1,28 @@
+name: Docker Containers
+
+on:
+  push:
+    branches: [ 'main', 'develop' ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_API: concurrence-api
+  IMAGE_NAME_CLIENT: concurrence-client
+  DEV_TAG: latest
+  RELEASE_TAG: v0.1.0
+
+jobs:
+  docker-compose:
+    timeout-minutes: 5
+    runs-on:
+      ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build Containers
+      run: docker-compose build
