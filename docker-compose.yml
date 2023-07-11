@@ -1,7 +1,7 @@
 services:
   api:      
     environment:
-      - ASPNETCORE_URLS=http://${CONCURRENCE_API_HOSTNAME}:${CONCURRENCE_API_PORT}
+      - ASPNETCORE_URLS=${CONCURRENCE_API_HOSTNAME}:${CONCURRENCE_API_PORT}
       - ASPNETCORE_ENVIRONMENT=${ENV_DEPLOYMENT_TYPE}
     build: 
       context: ConcurrenceAPI

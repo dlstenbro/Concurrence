@@ -48,7 +48,7 @@ export class StreamsComponent implements OnInit {
   public getAPIURL() : string {
     let hostname : any = environment.CONCURRENCE_API_HOSTNAME;
     let port : any = environment.CONCURRENCE_API_PORT;
-    let uri = `https://${hostname}:${port}`;
+    let uri = `${hostname}:${port}`;
 
     console.log(environment)
     console.log(uri);
