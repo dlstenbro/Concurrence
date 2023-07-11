@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
 import { environment } from 'src/environments/environment';
 
@@ -46,11 +46,13 @@ export class StreamsComponent implements OnInit {
   }
 
   public getAPIURL() : string {
-    let hostname : string = environment.CONCURRENCE_API_HOSTNAME;
-    let port : number = environment.CONCURRENCE_API_PORT;
+    let hostname : any = environment.CONCURRENCE_API_HOSTNAME;
+    let port : any = environment.CONCURRENCE_API_PORT;
     let uri = `https://${hostname}:${port}`;
 
+    console.log(environment)
     console.log(uri);
+
     return uri;
   }
 

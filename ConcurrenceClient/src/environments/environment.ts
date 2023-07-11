@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  CONCURRENCE_API_PORT: 11111,
+  CONCURRENCE_API_PORT: '11111',
   CONCURRENCE_API_HOSTNAME:''
 };
 
