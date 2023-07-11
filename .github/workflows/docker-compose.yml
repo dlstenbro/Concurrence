@@ -6,8 +6,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME_API: concurrence-api
-  IMAGE_NAME_CLIENT: concurrence-client
   DEV_TAG: latest
   RELEASE_TAG: v0.1.0
 
