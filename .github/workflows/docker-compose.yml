@@ -1,7 +1,7 @@
 name: Docker Containers
 
 on:
-  push:
+  pull_request:
     branches: [ 'main', 'develop' ]
 
 env:
