@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { PageEvent } from '@angular/material/paginator';
+import { HttpClient } from '@angular/common/http';
+import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-streams',
@@ -8,8 +9,6 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./streams.component.css']
 })
 export class StreamsComponent implements OnInit {
-
-  api_url: string = "https://localhost:5001";
   platform_icon_twitch: string = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iMTYiIGhlaWdodD0iMTYiCnZpZXdCb3g9IjAgMCAxNiAxNiI+CjxwYXRoIGQ9Ik0gMiAxIEwgMSAzLjY0ODQzOCBMIDEgMTIgTCA0IDEyIEwgNCAxNCBMIDUuMzc1IDE0IEwgNy44NDM3NSAxMiBMIDEwLjUgMTIgTCAxNCA4LjI1IEwgMTQgMSBaIE0gMyAyIEwgMTMgMiBMIDEzIDcuNzE0ODQ0IEwgMTAuODc1IDEwIEwgNy4yMDMxMjUgMTAgTCA1IDExLjg3NSBMIDUgMTAgTCAzIDEwIFogTSA2IDQgTCA2IDggTCA3IDggTCA3IDQgWiBNIDkgNCBMIDkgOCBMIDEwIDggTCAxMCA0IFoiPjwvcGF0aD4KPC9zdmc+";
   platform_icon_youtube: string = "https://www.svgrepo.com/show/156038/youtube.svg"
 
@@ -43,7 +42,18 @@ export class StreamsComponent implements OnInit {
   public constructor( private http : HttpClient ) { }
 
   public ngOnInit(): void {
-    this.UpdateData(this.api_url, this.pageSize, this.data?.page);
+    this.UpdateData(this.getAPIURL(), this.pageSize, this.data?.page);
+  }
+
+  public getAPIURL() : string {
+    let hostname : any = environment.CONCURRENCE_API_HOSTNAME;
+    let port : any = environment.CONCURRENCE_API_PORT;
+    let uri = `https://${hostname}:${port}`;
+
+    console.log(environment)
+    console.log(uri);
+
+    return uri;
   }
 
   public handlePageEvent(e: PageEvent) {
@@ -52,19 +62,11 @@ export class StreamsComponent implements OnInit {
     console.log(e);
 
     let previousPageIndex = e.previousPageIndex ? e.previousPageIndex : 0;
-    let back : boolean = false;
-    let forward : boolean = false;
+    let back : boolean = (previousPageIndex > e.pageIndex);
+    let forward : boolean = (previousPageIndex < e.pageIndex);
 
-    if(previousPageIndex > e.pageIndex )
-    {
-      back = true;
-    }
-    else if(previousPageIndex < e.pageIndex)
-    {
-      forward = true;
-    }
     this.pageSize = e.pageSize;
-    this.UpdateData(this.api_url, this.pageSize, this.data?.page, forward, back);
+    this.UpdateData(this.getAPIURL(), this.pageSize, this.data?.page, forward, back);
   };
 
   public handleSearchEvent(e: any){
@@ -75,9 +77,8 @@ export class StreamsComponent implements OnInit {
     };
 
     let search_type = "name";
-
     let search_parameters = `?`;
-    let request_uri = `${this.api_url}/StreamSearch`;
+    let request_uri = `${this.getAPIURL()}/StreamSearch`;
 
     if(search_type == "name")
     {
@@ -105,7 +106,7 @@ export class StreamsComponent implements OnInit {
 
   public RefreshData()
   {
-    this.UpdateData(this.api_url, this.pageSize, this.data?.page);
+    this.UpdateData(this.getAPIURL(), this.pageSize, this.data?.page);
   }
 
   public UpdateData(api_url : string, first : number = 20, cursor : string = "", isForward : boolean = false, isBackward : boolean = false) {

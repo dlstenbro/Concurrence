@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   CONCURRENCE_API_PORT: $ENV.CONCURRENCE_API_PORT,
   CONCURRENCE_API_HOSTNAME: $ENV.CONCURRENCE_API_HOSTNAME
 };

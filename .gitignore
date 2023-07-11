@@ -2,3 +2,9 @@
 ConcurrenceAPI/bin
 ConcurrenceAPI/obj
 ConcurrenceClient/node_modules
+.dockerignore
+*.txt
+*original
+.angular
+dist
+.env

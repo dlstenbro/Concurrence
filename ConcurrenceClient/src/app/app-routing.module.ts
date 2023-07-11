@@ -4,7 +4,7 @@ import { StreamsComponent } from './streams/streams.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 
 const routes: Routes = [
-  { path: '', redirectTo: '/streams', pathMatch: 'full' },
+  { path: '', redirectTo: 'streams', pathMatch: 'full' },
   { path: 'streams', component: StreamsComponent },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full'  }
 ];

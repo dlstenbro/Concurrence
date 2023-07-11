@@ -1,0 +1,27 @@
+version: "0.1.0"
+services:
+  api:      
+    environment:
+      - ASPNETCORE_URLS=http://${CONCURRENCE_API_HOSTNAME}:${CONCURRENCE_API_PORT}
+      - ASPNETCORE_ENVIRONMENT=${ENV_DEPLOYMENT_TYPE}
+    build: 
+      context: ConcurrenceAPI
+      dockerfile: Dockerfile
+
+  client:
+    depends_on:
+      - api
+    environment:
+        - ENV_DEPLOYMENT_TYPE=${ENV_DEPLOYMENT_TYPE}
+        - ENV_CONCURRENCE_API_HOSTNAME=${CONCURRENCE_API_HOSTNAME}
+        - ENV_CONCURRENCE_API_PORT=${CONCURRENCE_API_PORT}
+    build: 
+      context: ConcurrenceClient
+      dockerfile: Dockerfile
+      args: 
+        - ENV_DEPLOYMENT_TYPE=${ENV_DEPLOYMENT_TYPE}
+        - ENV_CONCURRENCE_API_HOSTNAME=${CONCURRENCE_API_HOSTNAME}
+        - ENV_CONCURRENCE_API_PORT=${CONCURRENCE_API_PORT}
+
+    ports:
+      - ${CONCURRENCE_CLIENT_PORT}:${CONCURRENCE_CLIENT_PORT}
