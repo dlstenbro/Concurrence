@@ -4,9 +4,9 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       $ENV: {
-        ENVIRONMENT: JSON.stringify(process.env.ENVIRONMENT),
-        SomeAPIKey: JSON.stringify(process.env.SomeAPIKey),
-        SomeOtherAPIKey: JSON.stringify(process.env.SomeOtherAPIKey)
+        DEPLOYMENT_TYPE: JSON.stringify(process.env.DEPLOYMENT_TYPE),
+        CONCURRENCE_API_PORT: JSON.stringify(process.env.CONCURRENCE_API_PORT),
+        CONCURRENCE_API_HOSTNAME: JSON.stringify(process.env.CONCURRENCE_API_HOSTNAME)
       }
     })
   ]
