@@ -46,12 +46,10 @@ export class StreamsComponent implements OnInit {
   }
 
   public getAPIURL() : string {
+
     let hostname : any = environment.CONCURRENCE_API_HOSTNAME;
     let port : any = environment.CONCURRENCE_API_PORT;
-    let uri = `${hostname}:${port}`;
-
-    console.log(environment)
-    console.log(uri);
+    var uri = `${hostname}:${port}`;
 
     return uri;
   }
@@ -115,10 +113,8 @@ export class StreamsComponent implements OnInit {
       "method": "GET"
     };
 
-    let request_uri = `${api_url}`;
     let paramFirst = `first=${first}`;
-
-    request_uri = `${request_uri}?${paramFirst}`;
+    let request_uri = `${api_url}?${paramFirst}`;
 
     if(isForward) { request_uri = `${request_uri}&after=${cursor}`; }
     else if(isBackward){ request_uri = `${request_uri}&before=${cursor}`; }

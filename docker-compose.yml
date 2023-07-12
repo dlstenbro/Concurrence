@@ -1,11 +1,35 @@
+networks:
+  internal_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${INTERNAL_NET_SUBNET}
+
+secrets:
+  twitch_client_secret:
+    environment: "TWITCH_CLIENT_SECRET"
+  twitch_client_id:
+    environment: "TWITCH_CLIENT_ID"
+  youtube_api_key:
+    environment: "YOUTUBE_API_KEY"
+
 services:
   api:      
+    secrets:
+    - twitch_client_secret
+    - twitch_client_id
+    - youtube_api_key
     environment:
-      - ASPNETCORE_URLS=${CONCURRENCE_API_HOSTNAME}:${CONCURRENCE_API_PORT}
+      - ASPNETCORE_URLS=http://+:${CONCURRENCE_API_PORT}
       - ASPNETCORE_ENVIRONMENT=${ENV_DEPLOYMENT_TYPE}
     build: 
       context: ConcurrenceAPI
       dockerfile: Dockerfile
+    ports:
+      - ${CONCURRENCE_API_PORT}:${CONCURRENCE_API_PORT}
+    networks:
+      internal_net:
+        ipv4_address: ${INTERNAL_NET_API_IP}
 
   client:
     depends_on:
@@ -21,6 +45,8 @@ services:
         - ENV_DEPLOYMENT_TYPE=${ENV_DEPLOYMENT_TYPE}
         - ENV_CONCURRENCE_API_HOSTNAME=${CONCURRENCE_API_HOSTNAME}
         - ENV_CONCURRENCE_API_PORT=${CONCURRENCE_API_PORT}
-
     ports:
       - ${CONCURRENCE_CLIENT_PORT}:${CONCURRENCE_CLIENT_PORT}
+    networks:
+      internal_net:
+        ipv4_address: ${INTERNAL_NET_WEB_IP}

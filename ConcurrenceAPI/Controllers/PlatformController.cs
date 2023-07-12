@@ -7,11 +7,8 @@ using System.Text.Json;
 using ConcurrenceAPI.Models.Twitch;
 using ConcurrenceAPI.Models.YouTube;
 using ConcurrenceAPI.Models;
-
 using ConcurrenceAPI.Platforms;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using static ConcurrenceAPI.Models.YouTube.YoutubeLiveSearch.Item;
-using System;
+using System.Text;
 
 namespace ConcurrenceAPI.Controllers
 {
@@ -30,8 +27,10 @@ namespace ConcurrenceAPI.Controllers
         public PlatformController(IConfiguration configuration)
         {
             _config = configuration;
-            _twitchAPI = new TwitchAPI(_config["ClientId"], _config["ClientSecret"]);
-            _youtubeLiveAPI = new YoutubeLiveAPI(_config["YTAPIKey"]);
+
+            var secrets = GetSecrets();
+            _twitchAPI = new TwitchAPI(secrets["twitch_client_id"], secrets["twitch_client_secret"]);
+            _youtubeLiveAPI = new YoutubeLiveAPI(secrets["youtube_api_key"]);
         }
         #endregion Constructor
 
@@ -88,6 +87,7 @@ namespace ConcurrenceAPI.Controllers
             return _youtubeLiveAPI.GetStreams(parameters);
         }
 
+        #region Methods
         private ConcurrenceModel populateModel()
         {
             /*
@@ -150,5 +150,23 @@ namespace ConcurrenceAPI.Controllers
 
             return model;
         }
+
+        private Dictionary<string, string> GetSecrets()
+        {
+            var secrets = @"/run/secrets";
+
+            string twitch_client_id = System.IO.File.ReadAllText($"{secrets}/twitch_client_id", Encoding.UTF8);
+            string twitch_client_secret = System.IO.File.ReadAllText($"{secrets}/twitch_client_secret", Encoding.UTF8);
+            string youtube_api_key = System.IO.File.ReadAllText($"{secrets}/youtube_api_key", Encoding.UTF8);
+
+            return new Dictionary<string, string> { 
+                { "twitch_client_id", twitch_client_id },
+                { "twitch_client_secret", twitch_client_secret },
+                { "youtube_api_key", youtube_api_key }
+            };
+        }
+        #endregion Methods
+
+
     }
 }

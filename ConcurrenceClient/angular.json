@@ -57,7 +57,7 @@
 							],
 							"outputHashing": "all"
 						},
-						"development": {
+						"Development": {
 							"buildOptimizer": false,
 							"optimization": false,
 							"vendorChunk": true,
@@ -77,14 +77,14 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
-						"production": {
+						"Production": {
 							"browserTarget": "ConcurrenceClient:build:production"
 						},
 						"development": {
 							"browserTarget": "ConcurrenceClient:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "Development"
 				},
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
@@ -108,12 +108,6 @@
 							"src/styles.css"
 						],
 						"scripts": []
-					}
-				},
-				"collect-vars": {
-					"builder": "ng-process-env:collectVars",
-					"options": {
-						"environmentFile": "src/environments/environment.onprem.ts"
 					}
 				}
 			}
