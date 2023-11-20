@@ -1,0 +1,39 @@
+<mat-card class="card">
+  <mat-card-header class="card_header">
+    <img mat-card-avatar alt="svgImg" src="{{platform_icon_youtube}}"/>
+    <span class="button_spacer"></span>
+    <mat-card-title-group class="card_title_group">
+      <mat-card-title>{{stream?.creator_name}}</mat-card-title>
+      <mat-card-subtitle>{{stream?.game_name}}</mat-card-subtitle>
+    </mat-card-title-group>
+    <span class="button_spacer"></span>
+    <div class="card_menu_button">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>dialpad</mat-icon>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-card-header>
+  <mat-card-content class="card_content" flex>
+    <img mat-card-image src="{{stream?.thumbnail_img}}">
+    <mat-label>Viewers: {{stream?.viewers}}</mat-label>
+    <p>
+      {{stream?.title}}
+    </p>
+  </mat-card-content>
+  <mat-card-footer class="card_footer">
+    <mat-divider></mat-divider>
+    <mat-card-actions>
+      <button mat-icon-button>
+        <mat-icon>favorite</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>open_in_new</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card-footer>
+</mat-card>

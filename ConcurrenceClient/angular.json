@@ -57,7 +57,7 @@
 							],
 							"outputHashing": "all"
 						},
-						"Development": {
+						"development": {
 							"buildOptimizer": false,
 							"optimization": false,
 							"vendorChunk": true,
@@ -77,14 +77,14 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
-						"Production": {
+						"production": {
 							"browserTarget": "ConcurrenceClient:build:production"
 						},
 						"development": {
 							"browserTarget": "ConcurrenceClient:build:development"
 						}
 					},
-					"defaultConfiguration": "Development"
+					"defaultConfiguration": "development"
 				},
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",

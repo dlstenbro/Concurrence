@@ -14,10 +14,8 @@ ENV CONCURRENCE_API_PORT=${ENV_CONCURRENCE_API_PORT}
 WORKDIR /app
 COPY . .
 
-RUN npm cache clean --force
-RUN npm install -g npm@latest
-RUN npm install && npm install -g @angular/cli
-RUN npm run build -- --configuration=${DEPLOYMENT_TYPE}
+RUN npm install -g npm@latest @angular/cli && \
+    npm run build -- --configuration=${DEPLOYMENT_TYPE}
 
 #stage 2
 FROM nginx:alpine

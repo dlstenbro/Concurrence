@@ -1,0 +1,35 @@
+<mat-toolbar class="main_toolbar" color="primary">
+  <mat-toolbar-row class="button_toolbar">
+    <button mat-button (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-label>{{filter}}</mat-label>
+    <span class="button_spacer"></span>
+    <div class="search_field_div">
+      <!--
+      <mat-form-field class="search_field" appearance="fill" type="text" (change)="handleSearchEvent($event)">
+        <mat-label>Search</mat-label>
+        <input matInput #input placeholder="Ex. Streamer name">
+        <mat-icon matSuffix>search</mat-icon>
+
+      </mat-form-field>
+      -->
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-drawer #drawer class="drawer" mode="side" closed>
+  <mat-list>
+    <mat-list-item>
+      <button mat-button>
+        <mat-icon>home</mat-icon>
+      </button>
+    </mat-list-item>
+    <mat-list-item>
+      <button mat-button>
+        <mat-icon>about</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+</mat-drawer>
+

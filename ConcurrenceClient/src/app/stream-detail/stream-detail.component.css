@@ -1,0 +1,59 @@
+
+.sizenav {
+  color: rgb(116, 144, 180);
+}
+
+mat-grid-tile {
+    color: cornflowerblue;
+    align-content: center;
+    text-align: center;
+}
+
+.button_toolbar {
+  margin: right;
+}
+
+.button_spacer {
+  flex: 1 1 auto;
+}
+
+.card {
+    background:rgb(116, 144, 180);
+    max-width: 400px;
+    width: calc(100% - 50px);
+    height: calc(100% - 50px);
+
+    display:flex;
+    flex-direction: column;
+  }
+
+.card_header {
+    text-align:center;
+    padding-bottom: 10px;
+
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0
+}
+
+.card_content {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.card_footer {
+    text-align:center;
+}
+
+header {
+  text-align:right;
+}
+
+h2 {
+color: mediumvioletred;
+font-size: larger
+}
+
+.search_field_div {
+font-size: 15px;
+}
